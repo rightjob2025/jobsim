@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ジョブシミュレーション</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- PDF Generation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Chart.js (for radar charts) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Base Styles */
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+        }
+
+        /* Scrollbar Styles */
+        .chat-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        .chat-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .chat-container::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        .chat-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Message Animation */
+        .message {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Choice Button Styles */
+        .choice-button {
+            transition: all 0.2s ease-in-out;
+        }
+        .choice-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div id="app" class="max-w-4xl mx-auto h-screen flex flex-col p-4">
+
+        <!-- Top Screen -->
+        <div id="screen-top" class="flex flex-col items-center justify-start pt-20 h-full">
+            <img id="topLogo" src="" alt="Company Logo" class="h-16 mb-6 hidden">
+            <h1 id="gameTitle" class="text-4xl font-bold text-gray-800 mb-4 text-center"></h1>
+            <p class="text-gray-600 mb-8">あなたのキャリアを選択するシミュレーションゲーム</p>
+            <div class="w-full max-w-sm">
+                 <input type="text" id="userName" placeholder="あなたの名前を入力してください" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4 text-lg">
+                 <button id="startButton" class="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition duration-300 shadow-lg text-lg disabled:bg-gray-400">シミュレーションを開始</button>
+            </div>
+        </div>
+
+        <!-- Game Screen (Chat UI) -->
+        <div id="screen-game" class="hidden h-full w-full flex flex-col bg-white rounded-2xl shadow-2xl overflow-hidden">
+            <header class="bg-gray-800 text-white p-4 flex justify-between items-center shadow-md z-10">
+                <div class="flex items-center gap-4">
+                    <img id="headerLogo" src="" alt="Company Logo" class="h-8 hidden">
+                    <h2 id="phaseTitle" class="text-lg font-bold"></h2>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="hintButton" class="hidden bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg text-sm">ガイド</button>
+                    <button id="dashboardButton" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg text-sm">スコア確認</button>
+                </div>
+            </header>
+            
+            <main id="chat-container" class="chat-container flex-1 p-6 overflow-y-auto space-y-6">
+                <!-- Messages and choices will be dynamically added here -->
+            </main>
+
+        </div>
+
+        <!-- Dashboard Screen -->
+        <div id="screen-dashboard" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md m-4">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">現在のスコア</h2>
+                <div style="width: 100%; height: 300px;">
+                    <canvas id="dashboardRadarChart"></canvas>
+                </div>
+                <div class="mt-6 text-center">
+                    <button id="closeDashboardButton" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition duration-300">閉じる</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Guide Display Modal -->
+        <div id="screen-hint" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md m-4">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">ガイド</h2>
+                <div id="hintText" class="text-gray-600 mb-6 whitespace-pre-wrap"></div>
+                <div class="mt-6 text-center">
+                    <button id="closeHintButton" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition duration-300">閉じる</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pre-Result Modal -->
+        <div id="screen-pre-result" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-end justify-center z-50 pb-20">
+            <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md m-4 text-center">
+                <p id="preResultMessage" class="text-2xl font-bold mb-8 text-gray-800"></p>
+                <button id="showResultButton" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition duration-300 shadow-lg">結果を見る</button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="screen-result" class="hidden flex-col items-center justify-center h-full p-4">
+            <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-2xl text-center">
+                <h2 id="resultTitle" class="text-3xl font-bold text-gray-800 mb-4"></h2>
+                <div id="resultMessage" class="text-gray-600 mb-6 text-left whitespace-pre-wrap"></div>
+                <div class="my-6">
+                    <canvas id="resultRadarChart"></canvas>
+                </div>
+                <div class="mt-8 flex flex-wrap justify-center gap-4">
+                    <button id="certificateButton" class="bg-green-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-green-700 transition duration-300 shadow-lg">修了証を発行する</button>
+                    <button id="interviewButton" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition duration-300 shadow-lg">企業へ応募する</button>
+                    <button id="retryButton" class="bg-gray-500 text-white font-bold py-3 px-8 rounded-lg hover:bg-gray-600 transition duration-300 shadow-lg">もう一度挑戦する</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Retry Modal -->
+        <div id="screen-retry" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md m-4 text-center">
+                <p class="text-xl mb-6 text-gray-800">再読み込み(F5リロード)してください</p>
+                <button id="closeRetryButton" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition duration-300">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="image-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 items-center justify-center z-50 p-4">
+        <div class="relative max-w-4xl max-h-full">
+            <img id="modal-image" src="" alt="拡大画像" class="rounded-lg shadow-xl object-contain max-w-full max-h-[90vh]">
+            <button id="close-modal-button" class="absolute -top-4 -right-4 bg-white rounded-full p-2 text-gray-800 hover:bg-gray-200 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+<script>
+// --- Global Variables ---
+const SPREADSHEET_URL = 'https://script.google.com/macros/s/AKfycbw32Rz2l6whSBtk1hUjqxnjeb4v1B87oU9JshWDA6cOERROTlQpiJsNww_tJwsc3p6Y/exec'; // Replace with your provided GAS URL
+let gameData = {};
+let scores = {};
+let userName = '';
+let currentPhaseId = 'prologue'; // Starting phase ID
+let phaseRenderCounter = 0; // For infinite loop detection
+const MAX_CONSECUTIVE_RENDERS = 50; // Max phase changes without user interaction
+let finalEndContent = null; // To store final result data
+let lastDisplayedMessage = ''; // To prevent duplicate messages
+
+// --- DOM Elements ---
+const screens = {
+    top: document.getElementById('screen-top'),
+    game: document.getElementById('screen-game'),
+    dashboard: document.getElementById('screen-dashboard'),
+    hint: document.getElementById('screen-hint'),
+    preResult: document.getElementById('screen-pre-result'),
+    result: document.getElementById('screen-result'),
+    retry: document.getElementById('screen-retry'),
+};
+const gameTitleEl = document.getElementById('gameTitle');
+const userNameInput = document.getElementById('userName');
+const startButton = document.getElementById('startButton');
+const chatContainer = document.getElementById('chat-container');
+const phaseTitleEl = document.getElementById('phaseTitle');
+const dashboardButton = document.getElementById('dashboardButton');
+const closeDashboardButton = document.getElementById('closeDashboardButton');
+const hintButton = document.getElementById('hintButton');
+const closeHintButton = document.getElementById('closeHintButton');
+const hintTextEl = document.getElementById('hintText');
+const preResultMessageEl = document.getElementById('preResultMessage');
+const showResultButton = document.getElementById('showResultButton');
+const resultTitleEl = document.getElementById('resultTitle');
+const resultMessageEl = document.getElementById('resultMessage');
+const certificateButton = document.getElementById('certificateButton');
+const interviewButton = document.getElementById('interviewButton');
+const retryButton = document.getElementById('retryButton');
+const closeRetryButton = document.getElementById('closeRetryButton');
+// Image Modal Elements
+const imageModal = document.getElementById('image-modal');
+const modalImage = document.getElementById('modal-image');
+const closeModalButton = document.getElementById('close-modal-button');
+
+// --- Initialization ---
+document.addEventListener('DOMContentLoaded', initialize);
+
+// Helper function to fetch data from GAS using JSONP
+function fetchJSONP(url) {
+    return new Promise((resolve, reject) => {
+        const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+        window[callbackName] = function(data) {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve(data);
+        };
+
+        const script = document.createElement('script');
+        script.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + callbackName;
+        script.onerror = (err) => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            reject(new TypeError('Failed to fetch script. This could be due to an incorrect URL or a deployment issue with the Google Apps Script. Please ensure the script is deployed as a web app with access set to "Anyone".'));
+        };
+        document.body.appendChild(script);
+    });
+}
+
+
+async function initialize() {
+    setupEventListeners();
+    userNameInput.value = localStorage.getItem('jobsim_userName') || '';
+    
+    startButton.disabled = true;
+    startButton.textContent = 'データを読み込み中...';
+    
+    try {
+        const cacheBustingUrl = SPREADSHEET_URL + (SPREADSHEET_URL.includes('?') ? '&' : '?') + 'v=' + new Date().getTime();
+        gameData = await fetchJSONP(cacheBustingUrl);
+
+        if (gameData.error) {
+            throw new Error(`GAS Error: ${gameData.error}`);
+        }
+        
+        if (!gameData.contents || gameData.contents.length === 0) {
+            throw new Error('「コンテンツデータ」シートが空か、正しく読み込めていません。');
+        }
+        const initialPhaseExists = gameData.contents.some(p => p.phaseId && String(p.phaseId).trim() === currentPhaseId);
+        if (!initialPhaseExists) {
+            throw new Error(`開始フェーズ (ID: ${currentPhaseId}) が「コンテンツデータ」シートに見つかりません。phaseId列に'${currentPhaseId}'が存在するか確認してください。`);
+        }
+
+        if (!gameData.logics) {
+             alert('警告: スプレッドシートから判定ロジックデータを読み込めませんでした。\n・「判定ロジック」シートが存在するか\n・Google Apps Scriptが最新版か\nを確認してください。エンディングが意図通りに表示されないことがあります。');
+        }
+
+        gameTitleEl.textContent = gameData.settings.gameTitle || 'ジョブシミュレーション';
+        
+        // --- Logo Loading Logic with Error Handling ---
+        if (gameData.settings.companyLogoUrl) {
+            const topLogo = document.getElementById('topLogo');
+            const headerLogo = document.getElementById('headerLogo');
+
+            // Function to handle image loading
+            const loadImage = (imgElement, type) => {
+                imgElement.onerror = () => {
+                    console.error(`${type}ロゴの読み込みに失敗しました。URLを確認してください: ${imgElement.src}`);
+                    imgElement.classList.add('hidden'); // Hide broken image icon
+                };
+                imgElement.onload = () => {
+                    imgElement.classList.remove('hidden');
+                };
+                imgElement.src = gameData.settings.companyLogoUrl;
+            };
+
+            loadImage(topLogo, 'トップ');
+            loadImage(headerLogo, 'ヘッダー');
+        }
+
+        Object.keys(gameData.scoreDefinitions).forEach(key => {
+            scores[key] = 0;
+        });
+
+        startButton.textContent = 'シミュレーションを開始';
+        validateUserName();
+
+    } catch (error) {
+        console.error('Failed to load game data:', error);
+        alert('ゲームデータの読み込みに失敗しました。\n\n【エラー内容】\n' + error.message + '\n\n【Google Apps Scriptとスプレッドシートの設定を確認してください】\n\n1. URLは正しいですか？\n   - HTML内のSPREADSHEET_URLの値を確認してください。\n\n2. Webアプリとしてデプロイされていますか？\n   - GASエディタで「デプロイ」>「新しいデプロイ」を実行しましたか？\n\n3. アクセス権限は「全員」になっていますか？\n   - デプロイ設定で「アクセスできるユーザー」を「全員」にしてください。\n\n4. スプレッドシートのIDは正しいですか？\n   - GAS内のspreadsheetIdの値を確認してください。\n\n5. シート名は正しいですか？\n   - 「設定」「コンテンツデータ」など、全てのシート名が正しいか確認してください。');
+        startButton.textContent = '読み込みエラー';
+    }
+}
+
+function setupEventListeners() {
+    startButton.addEventListener('click', startGame);
+    userNameInput.addEventListener('input', validateUserName);
+    dashboardButton.addEventListener('click', showDashboard);
+    closeDashboardButton.addEventListener('click', hideDashboard);
+    hintButton.addEventListener('click', showHint);
+    closeHintButton.addEventListener('click', hideHint);
+    showResultButton.addEventListener('click', displayFinalResult);
+    certificateButton.addEventListener('click', generateCertificate);
+    interviewButton.addEventListener('click', openInterviewLink);
+    retryButton.addEventListener('click', showRetryModal);
+    closeRetryButton.addEventListener('click', hideRetryModal);
+
+    // Image Modal Listeners
+    chatContainer.addEventListener('click', (e) => {
+        if (e.target.tagName === 'IMG' && e.target.classList.contains('chat-image')) {
+            showImageModal(e.target.src);
+        }
+    });
+    closeModalButton.addEventListener('click', hideImageModal);
+    imageModal.addEventListener('click', (e) => {
+        if (e.target === imageModal) {
+            hideImageModal();
+        }
+    });
+}
+
+function validateUserName() {
+    startButton.disabled = !userNameInput.value.trim() || !gameData.settings;
+}
+
+// --- Screen Transitions ---
+function showScreen(screenName) {
+    Object.values(screens).forEach(screen => screen.classList.add('hidden'));
+    screens[screenName].classList.remove('hidden');
+    // Use flex for main screens, but keep modal's display property as is (it's also flex)
+    if (screenName !== 'preResult' && screenName !== 'dashboard' && screenName !== 'hint' && screenName !== 'retry') {
+        screens[screenName].classList.add('flex');
+    }
+}
+
+// --- Game Logic ---
+function startGame() {
+    userName = userNameInput.value.trim();
+    localStorage.setItem('jobsim_userName', userName);
+    showScreen('game');
+    renderPhase(currentPhaseId);
+}
+
+async function renderPhase(phaseId) {
+    phaseRenderCounter++;
+    if (phaseRenderCounter > MAX_CONSECUTIVE_RENDERS) {
+        alert('エラー: シナリオの無限ループを検出しました。スプレッドシートの choice_nextPhaseId の設定を確認してください。');
+        console.error('Infinite loop detected. Aborting.');
+        return;
+    }
+
+    currentPhaseId = phaseId; 
+    
+    if (!phaseId) {
+        console.error(`renderPhase was called with an empty phaseId.`);
+        alert('次のコンテンツのIDが指定されていません。シナリオデータを確認してください。');
+        return;
+    }
+    const phase = gameData.contents.find(p => p.phaseId && String(p.phaseId).trim() === String(phaseId).trim());
+    if (!phase) {
+        console.error(`Phase data not found for ID: '${phaseId}'`);
+        const endId = phaseId; 
+        const endContent = gameData.contents.find(c => c.dataType === 'end' && c.endId === endId);
+        if(endContent) {
+            showResult(endContent);
+        } else {
+             alert(`次のコンテンツが見つかりません。(ID: ${phaseId})`);
+        }
+        return;
+    }
+
+    phaseTitleEl.textContent = phase.phaseTitle || '';
+
+    await displayMessages(phase.phaseDescription);
+    
+    // MODIFIED: Automatically detect content type and display it.
+    if (phase.videoUrl) await displayMedia(phase.videoUrl);
+    if (phase.taskContent) await displayMedia(phase.taskContent);
+    
+    // Scroll to bottom after content is displayed
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+    await sleep(100);
+
+
+    const isQuestionPage = phase.taskName && phase.taskName.trim() !== '' && phase.choice1_text && phase.choice1_text.trim() !== '';
+
+    const hintForPhase = gameData.hints && gameData.hints[phaseId.trim()];
+    if (isQuestionPage && hintForPhase) {
+        hintButton.classList.remove('hidden');
+    } else {
+        hintButton.classList.add('hidden');
+    }
+
+    if (isQuestionPage) {
+        await displayMessage(phase.taskName, 'system');
+        
+        const choices = [];
+        for (let i = 1; i <= 3; i++) {
+            if (phase[`choice${i}_text`] && phase[`choice${i}_text`].trim() !== '') {
+                let parsedScore = {};
+                try {
+                    parsedScore = JSON.parse(phase[`choice${i}_score`] || '{}');
+                } catch (e) {
+                    console.error(`Invalid JSON in score for phase ${phase.phaseId}, choice ${i}:`, phase[`choice${i}_score`]);
+                    alert(`データエラー: スコアの形式が正しくありません。\nフェーズID: ${phase.phaseId}\n選択肢: ${i}`);
+                }
+
+                choices.push({
+                    text: phase[`choice${i}_text`],
+                    score: parsedScore,
+                    nextPhaseId: phase[`choice${i}_nextPhaseId`],
+                    message: phase[`choice${i}_message`]
+                });
+            }
+        }
+        createChoiceButtons(choices);
+
+        await sleep(100);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+
+    } else {
+        const nextPhaseId = phase.choice1_nextPhaseId;
+        if (nextPhaseId && nextPhaseId.trim() !== '') {
+            await sleep(2500); // MODIFIED: 1500 -> 2250 (1.5x)
+            renderPhase(nextPhaseId.trim());
+        } else {
+             const finalEnd = calculateEnd();
+             showResult(finalEnd);
+        }
+    }
+}
+
+
+async function handleChoice(choice) {
+    lastDisplayedMessage = ''; // Reset duplicate check on new user action
+    phaseRenderCounter = 0; // Reset counter on user interaction
+    
+    const buttonWrapper = document.getElementById('button-wrapper');
+    if (buttonWrapper) {
+        buttonWrapper.remove();
+    }
+
+    await displayMessage(choice.text, 'character', userName || 'あなた'); // Display user's choice as their speech
+
+    // By removing the `hasOwnProperty` check, any score key from the spreadsheet will be
+    // added to the scores object, even if it wasn't pre-defined. This makes the system more flexible.
+    Object.keys(choice.score).forEach(key => {
+        const currentScore = Number(scores[key] || 0);
+        const addedScoreValue = choice.score[key];
+        const addedScore = Number(addedScoreValue);
+
+        // If the score from the sheet is not a valid number (e.g., text), warn the user and skip.
+        if (isNaN(addedScore)) {
+            console.warn(`[SCORE WARNING] Invalid score value for key '${key}' in phase '${currentPhaseId}'. Value: '${addedScoreValue}'. This score was ignored (treated as 0).`);
+            return; // Skip this invalid score update
+        }
+        
+        scores[key] = currentScore + addedScore;
+    });
+
+    if (choice.message) {
+        await displayMessages(choice.message);
+    }
+    
+    await sleep(2000); // MODIFIED: 1000 -> 1500 (1.5x)
+
+    const nextPhase = choice.nextPhaseId ? choice.nextPhaseId.trim() : '';
+
+    if (nextPhase.startsWith('end')) {
+        const endContent = gameData.contents.find(c => c.dataType === 'end' && c.endId === nextPhase);
+        showResult(endContent || calculateEnd());
+    } else if (nextPhase) {
+        renderPhase(nextPhase);
+    } else {
+        const finalEnd = calculateEnd();
+        showResult(finalEnd);
+    }
+}
+
+function calculateEnd() {
+    if (!gameData.logics || !Array.isArray(gameData.logics) || gameData.logics.length === 0) {
+        console.log("Judgment logic data not found, applying default ending.");
+        return gameData.contents.find(c => c.dataType === 'end');
+    }
+
+    const sortedLogics = gameData.logics.sort((a, b) => a.priority - b.priority);
+    
+    for (const logic of sortedLogics) {
+        try {
+            if (!logic.condition) {
+                continue; 
+            }
+
+            const condition = String(logic.condition) 
+                .replace(/([a-zA-Z_][a-zA-Z0-9_]*)/g, (match) => { 
+                    const keywords = ['true', 'false'];
+                    if (keywords.includes(match)) {
+                        return match;
+                    }
+                    // It's a potential score variable, default to 0 if not found
+                    return `(scores['${match}'] || 0)`;
+                });
+
+            if (eval(condition)) {
+                const endContent = gameData.contents.find(c => c.dataType === 'end' && c.endId === logic.endId);
+                if (endContent) return endContent;
+            }
+        } catch (e) {
+            console.error(`Error evaluating condition for endId ${logic.endId}:`, e);
+        }
+    }
+    return gameData.contents.find(c => c.dataType === 'end');
+}
+
+// --- Speaker-specific color coding and icon functionality ---
+let speakerColors = {};
+const colorPalette = ['#fecaca', '#fed7aa', '#d9f99d', '#bfdbfe', '#e9d5ff', '#fbcfe8'];
+let colorIndex = 0;
+
+function getSpeakerColor(speaker) {
+    if (speaker === (userName || 'あなた')) {
+        return '#dbeafe'; // Player is always light blue
+    }
+    if (!speakerColors[speaker]) {
+        speakerColors[speaker] = colorPalette[colorIndex % colorPalette.length];
+        colorIndex++;
+    }
+    return speakerColors[speaker];
+}
+
+
+// --- UI Generation ---
+async function displayMessages(description) {
+    if (!description || description.trim() === '') return;
+
+    const formattedDescription = description.replace(/{{userName}}/g, userName || 'あなた').trim();
+    
+    // Prevent the exact same message block from being displayed consecutively
+    if (formattedDescription && formattedDescription === lastDisplayedMessage) {
+        console.warn("Duplicate message block detected and skipped:", formattedDescription);
+        return; // Skip displaying this block
+    }
+    // Store the new message block content if it's not empty
+    if (formattedDescription) {
+        lastDisplayedMessage = formattedDescription;
+    }
+
+    const messages = formattedDescription.split(/<br\s*\/?>/).filter(m => m.trim() !== '');
+
+    for (const msg of messages) {
+        const trimmedMsg = msg.trim();
+        const match = trimmedMsg.match(/^\[(.*?)\](.*)/);
+        
+        if (match) {
+            const speaker = match[1].replace(/{{userName}}/g, userName || 'あなた');
+            const content = match[2].trim();
+            if (content) {
+                await displayMessage(content, 'character', speaker);
+            }
+        } else {
+            await displayMessage(trimmedMsg, 'system');
+        }
+        await sleep(2000); // MODIFIED: 800 -> 1200 (1.5x)
+    }
+}
+
+function displayMessage(text, type = 'system', speaker = '') {
+    return new Promise(resolve => {
+        const messageWrapper = document.createElement('div');
+        const iconUrl = gameData.speakers ? gameData.speakers[speaker] : null;
+
+        if (type === 'character') {
+            const speakerColor = getSpeakerColor(speaker);
+            let iconElement;
+            if(iconUrl) {
+                iconElement = `<img src="${iconUrl}" alt="${speaker}" class="w-10 h-10 rounded-full object-cover flex-shrink-0">`;
+            } else {
+                iconElement = `<div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-gray-600 flex-shrink-0" style="background-color: ${speakerColor};">${speaker.charAt(0)}</div>`;
+            }
+
+            const isUser = speaker === (userName || 'あなた');
+
+            if (isUser) {
+                messageWrapper.className = 'message flex items-start gap-3 justify-end';
+                messageWrapper.innerHTML = `
+                    <div class="flex flex-col items-end">
+                        <p class="font-bold text-gray-800">${speaker}</p>
+                        <div class="mt-1 text-white bg-blue-500 rounded-lg p-3 inline-block">${text}</div>
+                    </div>
+                    ${iconElement}
+                `;
+            } else {
+                messageWrapper.className = 'message flex items-start gap-3';
+                messageWrapper.innerHTML = `
+                    ${iconElement}
+                    <div>
+                        <p class="font-bold text-gray-800">${speaker}</p>
+                        <div class="mt-1 text-gray-700 rounded-lg p-3 inline-block" style="background-color: ${speakerColor};">${text}</div>
+                    </div>
+                `;
+            }
+        } else { // system or question
+            messageWrapper.className = 'message flex';
+            messageWrapper.innerHTML = `
+                <div class="w-full">
+                    <div class="text-gray-800 bg-gray-200 border-l-4 border-gray-400 p-3">${text}</div>
+                </div>
+            `;
+        }
+        
+        chatContainer.appendChild(messageWrapper);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+        
+        setTimeout(resolve, 500); // MODIFIED: 300 -> 450 (1.5x)
+    });
+}
+
+function convertToEmbedUrl(url) {
+    if (!url || typeof url !== 'string') return '';
+    if (url.includes('/embed/') || url.includes('/preview')) return url;
+    
+    let youtubeId = null;
+    if (url.includes("youtube.com/watch?v=")) {
+        youtubeId = url.split('v=')[1].split('&')[0];
+    } else if (url.includes("youtu.be/")) {
+        youtubeId = url.split('youtu.be/')[1].split('?')[0];
+    }
+    if (youtubeId) return `https://www.youtube.com/embed/${youtubeId}`;
+
+    if (url.includes("drive.google.com/file/d/")) {
+        const fileId = url.split('/d/')[1].split('/')[0];
+        return `https://drive.google.com/file/d/${fileId}/preview`;
+    }
+    return url;
+}
+
+
+// MODIFIED: This function now automatically detects if the URL is for an image or a video.
+function displayMedia(url) {
+    return new Promise(resolve => {
+        if (!url || typeof url !== 'string') {
+            resolve();
+            return;
+        }
+
+        const mediaWrapper = document.createElement('div');
+        mediaWrapper.className = 'message w-full flex justify-center my-4';
+
+        // Simple check for image file extensions
+        const isImageUrl = /\.(jpeg|jpg|gif|png|webp|svg)$/i.test(url);
+        // Simple check for common video hosting URLs
+        const isVideoUrl = /youtube\.com|youtu\.be|drive\.google\.com/i.test(url);
+
+        if (isImageUrl) {
+            mediaWrapper.innerHTML = `<img src="${url}" class="chat-image max-w-full md:max-w-md rounded-lg shadow-md cursor-pointer hover:opacity-80 transition" alt="コンテンツ画像" onerror="this.style.display='none'; console.error('Image failed to load: ${url}')">`;
+        } else if (isVideoUrl) {
+            const embedUrl = convertToEmbedUrl(url);
+            mediaWrapper.innerHTML = `
+                <div class="w-full aspect-video">
+                    <iframe class="w-full h-full rounded-lg shadow-md" src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>`;
+        } else {
+            // If type is uncertain, attempt to display as an image as a fallback.
+            console.warn(`Could not determine media type for URL: ${url}. Attempting to display as image.`);
+            mediaWrapper.innerHTML = `<img src="${url}" class="chat-image max-w-full md:max-w-md rounded-lg shadow-md cursor-pointer hover:opacity-80 transition" alt="コンテンツメディア" onerror="this.style.display='none'; console.error('Media (fallback) failed to load: ${url}')">`;
+        }
+        
+        if (mediaWrapper.innerHTML) {
+            chatContainer.appendChild(mediaWrapper);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        setTimeout(resolve, 300);
+    });
+}
+
+
+function createChoiceButtons(choices) {
+    const buttonContainer = document.createElement('div');
+    buttonContainer.id = 'button-wrapper'; // Add an ID for easy removal
+    buttonContainer.className = 'message grid grid-cols-1 gap-3 py-4'; // Add message class for animation
+
+    choices.forEach(choice => {
+        const button = document.createElement('button');
+        button.className = 'choice-button w-full bg-white text-blue-600 font-semibold py-3 px-4 border-2 border-blue-500 rounded-lg hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed';
+        button.textContent = choice.text;
+        button.onclick = () => handleChoice(choice);
+        buttonContainer.appendChild(button);
+    });
+    chatContainer.appendChild(buttonContainer);
+}
+
+// --- Image Modal Functionality ---
+function showImageModal(src) {
+    modalImage.src = src;
+    imageModal.classList.remove('hidden');
+    imageModal.classList.add('flex');
+}
+
+function hideImageModal() {
+    imageModal.classList.add('hidden');
+    imageModal.classList.remove('flex');
+    modalImage.src = ''; // Clear src to prevent showing old image briefly
+}
+
+// --- Dashboard Functionality ---
+function showDashboard() {
+    screens.dashboard.classList.remove('hidden');
+    screens.dashboard.classList.add('flex');
+    renderRadarChart('dashboardRadarChart', scores);
+}
+
+function hideDashboard() {
+    screens.dashboard.classList.add('hidden');
+}
+
+// --- Guide Functionality ---
+function showHint() {
+    const hint = gameData.hints[currentPhaseId.trim()];
+    if (hint) {
+        hintTextEl.textContent = hint;
+        screens.hint.classList.remove('hidden');
+        screens.hint.classList.add('flex');
+    }
+}
+
+function hideHint() {
+    screens.hint.classList.add('hidden');
+}
+
+// --- Retry Modal ---
+function showRetryModal() {
+    screens.retry.classList.remove('hidden');
+    screens.retry.classList.add('flex');
+}
+
+function hideRetryModal() {
+    screens.retry.classList.add('hidden');
+}
+
+// --- Results & Certificate ---
+function showResult(endContent) {
+    chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll chat to bottom
+    finalEndContent = endContent;
+    preResultMessageEl.textContent = `${userName}さん、シミュレーションお疲れ様でした！気になる結果は?`;
+    screens.preResult.classList.remove('hidden');
+    screens.preResult.classList.add('flex');
+}
+
+function displayFinalResult() {
+    screens.preResult.classList.add('hidden');
+    showScreen('result');
+    resultTitleEl.textContent = finalEndContent.endTitle || 'シミュレーション終了';
+    resultMessageEl.textContent = (finalEndContent.endMessage || '').replace(/{{userName}}/g, userName || 'あなた');
+    renderRadarChart('resultRadarChart', scores);
+    window.scrollTo(0, 0); // ページ全体のスクロールを一番上に戻す
+}
+
+function openInterviewLink() {
+    if (gameData.settings && gameData.settings.interviewUrl) {
+        window.open(gameData.settings.interviewUrl, '_blank');
+    } else {
+        alert('面談申し込み用のURLが設定されていません。');
+    }
+}
+
+async function generateCertificate() {
+    alert('修了証を生成中です...完了したら自動で保存されます。');
+    
+    const { jsPDF } = window.jspdf;
+    const certificateElement = createCertificateElement();
+    document.body.appendChild(certificateElement);
+
+    try {
+        // useCORS: true enables cross-origin image loading
+        const canvas = await html2canvas(certificateElement, { scale: 3, useCORS: true });
+        const imgData = canvas.toDataURL('image/png');
+        
+        const pdf = new jsPDF({
+            orientation: 'landscape',
+            unit: 'px',
+            format: [canvas.width, canvas.height]
+        });
+        
+        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+        const pdfFileName = `修了証_${userName}_${new Date().toLocaleDateString()}.pdf`;
+        pdf.save(pdfFileName);
+
+        await saveCertificateToDrive(pdf.output('datauristring'), pdfFileName);
+
+    } catch(err) {
+        console.error("PDF Generation Error:", err);
+        alert("修了証の生成に失敗しました。ロゴ画像のURLが正しいか、また画像サーバーがCORSリクエストを許可しているか確認してください。");
+    } finally {
+        if (document.body.contains(certificateElement)) {
+            document.body.removeChild(certificateElement);
+        }
+    }
+}
+
+async function saveCertificateToDrive(base64Data, fileName) {
+    try {
+        await fetch(SPREADSHEET_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'savePdf',
+                data: base64Data,
+                fileName: fileName
+            })
+        });
+         console.log('Request to save the certificate to Google Drive has been sent.');
+    } catch (error) {
+        console.error('Error while saving to Google Drive:', error);
+    }
+}
+
+function createCertificateElement() {
+    const now = new Date();
+    const dateString = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日`;
+    
+    // The logo URL is now directly used in the img tag's src.
+    // html2canvas with useCORS:true will handle the fetching.
+    const logoUrl = gameData.settings.companyLogoUrl || '';
+
+    const element = document.createElement('div');
+    element.style.width = '1056px';
+    element.style.height = '816px';
+    element.style.position = 'absolute';
+    element.style.left = '-9999px';
+    element.style.backgroundColor = 'white';
+    element.style.padding = '40px';
+    element.innerHTML = `
+        <div style="border: 10px solid #4a90e2; height: 100%; padding: 40px; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box;">
+            <div>
+                <h1 style="text-align: center; font-size: 48px; color: #333; margin-bottom: 20px;">修了証</h1>
+                <p style="text-align: center; font-size: 24px; margin-bottom: 60px;">${userName} 様</p>
+                <p style="text-align: center; font-size: 20px; line-height: 1.6;">
+                    あなたは「${gameData.settings.certificateCourseName || ''}」の<br>全課程を修了したことを証します
+                </p>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                 <div></div>
+                 <div style="text-align: right;">
+                    <p style="font-size: 18px; margin: 0 0 10px 0;">${dateString}</p>
+                    <p style="font-size: 22px; font-weight: bold; margin: 0;">${gameData.settings.gameTitle || ''}</p>
+                    ${logoUrl ? `<img src="${logoUrl}" crossOrigin="anonymous" alt="Logo" style="max-height: 60px; margin-top: 10px; margin-left: auto;">` : ''}
+                 </div>
+            </div>
+        </div>
+    `;
+    return element;
+}
+
+
+// --- Utilities ---
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function renderRadarChart(canvasId, data) {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    
+    let labels = [];
+    let values = [];
+
+    if (gameData && gameData.scoreDefinitions) {
+        const scoreDefKeys = Object.keys(gameData.scoreDefinitions);
+        labels = scoreDefKeys.map(key => gameData.scoreDefinitions[key]);
+        values = scoreDefKeys.map(key => data[key] || 0);
+    }
+
+    const chartInstance = Chart.getChart(canvasId);
+    if(chartInstance) {
+        chartInstance.destroy();
+    }
+
+    new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'スコア',
+                data: values,
+                fill: true,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgb(54, 162, 235)',
+                pointBackgroundColor: 'rgb(54, 162, 235)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgb(54, 162, 235)'
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    angleLines: { display: true },
+                    suggestedMin: 0,
+                    suggestedMax: Math.max(...(values.length > 0 ? values : [5]), 5)
+                }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+}
+
+</script>
+</body>
+</html>
