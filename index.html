@@ -1,16 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <!-- 修正ポイント
-    1) 貼り付け時に混入した不可視文字を除去し、インデント整形
-    2) SVG はすべて preserveAspectRatio & w-full h-auto を付与（横スク防止）
-    3) writing-mode を rotate(-90) に変更（ブラウザ差吸収）
-    4) ヘッダー高さを sm:md:lg で段階調整。テキスト幅をmax-wに制限
-    5) ボタンは wrap 許可 & min-w-0 指定で折返し可、親に overflow-hidden/contain
-    6) コンテナ幅を md:max-w-4xl → lg:max-w-5xl に、左右パディングを base で確保
-    7) 画像/背景が原因の CLS を減らすため header に min-h を付与
-  -->
-  <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-GT52HGDNZW"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -23,10 +13,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Right job ジョブシミュレーション</title>
 
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet" />
@@ -43,34 +31,33 @@
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
-  <div class="mx-auto max-w-screen-lg lg:max-w-5xl px-4 sm:px-6">
+  <div class="mx-auto max-w-screen-lg lg:max-w-5xl px-4 sm:px-6 lg:px-8">
 
-    <!-- 1. ファーストビュー -->
     <header
       class="relative text-left shadow-sm bg-cover bg-center overflow-hidden rounded-xl mt-4"
       style="background-image:url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=1600&auto=format&fit=crop');"
     >
       <div class="absolute inset-0 bg-blue-800/60"></div>
-      <div class="relative mx-auto h-full flex items-center px-6 py-12 min-h-[360px] sm:min-h-[420px] md:min-h-[520px] lg:min-h-[600px]">
+      <div class="relative mx-auto h-full flex items-center px-6 py-12 sm:px-8 min-h-[360px] sm:min-h-[420px] md:min-h-[520px] lg:min-h-[600px]">
         <div class="w-full max-w-2xl md:max-w-3xl">
-          <h1 class="text-3xl md:text-5xl headline text-white leading-tight">
+          <h1 class="text-3xl sm:text-4xl md:text-5xl headline text-white leading-tight">
             求人票だけでは、もう響かない。
           </h1>
-          <p class="mt-4 text-lg md:text-2xl font-bold text-white">
+          <p class="mt-4 text-lg sm:text-xl md:text-2xl font-bold text-white">
             “知りたい”に応え、応募数を増やす<br class="sm:hidden" />「体験型」採用広報。
           </p>
           <div class="mt-8 flex flex-col sm:flex-row gap-4 sm:gap-5 flex-wrap">
             <a
               href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2b7cWlxzaAvWUdQiAx4CqokETd3nPk4R9tZIvsHzR_rFDnBe2e9FMVnYnt32ixfJSruDg1-RFo"
               target="_blank" rel="noopener noreferrer"
-              class="inline-flex justify-center items-center bg-orange-500 text-white font-bold text-base md:text-lg py-3 md:py-4 px-6 md:px-8 rounded-lg shadow-md hover:bg-orange-600 transition-colors duration-300 min-w-0"
+              class="w-full sm:w-auto inline-flex justify-center items-center bg-orange-500 text-white font-bold text-base md:text-lg py-3 md:py-4 px-6 md:px-8 rounded-lg shadow-md hover:bg-orange-600 transition-colors duration-300 min-w-0"
             >
               オンライン相談の日程を調整する (無料)
             </a>
             <a
               href="https://drive.google.com/file/d/1DaH8fgfkApw7BibCYUonptEldZ1tAO51/view"
               target="_blank" rel="noopener noreferrer"
-              class="inline-flex justify-center items-center bg-white text-gray-700 font-bold text-base md:text-lg py-3 md:py-4 px-6 md:px-8 rounded-lg hover:bg-gray-100 transition-colors duration-300 min-w-0"
+              class="w-full sm:w-auto inline-flex justify-center items-center bg-white text-gray-700 font-bold text-base md:text-lg py-3 md:py-4 px-6 md:px-8 rounded-lg hover:bg-gray-100 transition-colors duration-300 min-w-0"
             >
               まずはサービス資料を見てみる
             </a>
@@ -79,13 +66,12 @@
       </div>
     </header>
 
-    <!-- 2. 問題提起 -->
-    <section class="py-16">
-      <h2 class="text-3xl md:text-4xl headline text-center">
+    <section class="py-12 md:py-16">
+      <h2 class="text-2xl sm:text-3xl md:text-4xl headline text-center">
         なぜ、今までの採用手法では<br class="md:hidden">うまくいかないのか？
       </h2>
       <div class="mt-12 grid md:grid-cols-2 gap-10 md:gap-12 items-center">
-        <div class="text-center p-2">
+        <div class="p-2">
           <svg viewBox="0 0 500 300" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" class="rounded-lg shadow-lg mx-auto w-full h-auto">
             <rect width="100%" height="100%" fill="#F3F4F6"/>
             <text x="50%" y="30" font-family="Noto Sans JP, sans-serif" font-size="18" font-weight="bold" text-anchor="middle">転職時に本当に知りたい情報</text>
@@ -93,15 +79,12 @@
               <rect x="0" y="0" width="300" height="40" fill="#4338CA"/>
               <text x="10" y="25" font-size="14" fill="white">リアルな仕事内容</text>
               <text x="310" y="25" font-size="14" font-weight="bold" fill="#4338CA">85%</text>
-
               <rect x="0" y="50" width="240" height="40" fill="#6D28D9"/>
               <text x="10" y="75" font-size="14" fill="white">企業文化・雰囲気</text>
               <text x="250" y="75" font-size="14" font-weight="bold" fill="#6D28D9">65%</text>
-
               <rect x="0" y="100" width="220" height="40" fill="#A78BFA"/>
               <text x="10" y="125" font-size="14" fill="white">給与・待遇</text>
               <text x="230" y="125" font-size="14" font-weight="bold" fill="#A78BFA">60%</text>
-
               <rect x="0" y="150" width="200" height="40" fill="#C4B5FD"/>
               <text x="10" y="175" font-size="14" fill="#3730A3">キャリアパス</text>
               <text x="210" y="175" font-size="14" font-weight="bold" fill="#C4B5FD">55%</text>
@@ -120,11 +103,10 @@
       </div>
     </section>
 
-    <!-- 3. 解決策 -->
-    <section class="bg-indigo-700 text-white py-16 px-4 sm:px-6 rounded-xl">
+    <section class="bg-indigo-700 text-white py-12 md:py-16 px-6 sm:px-8 rounded-xl">
       <div class="text-center">
         <p class="text-indigo-300 font-bold">その答えが、Right jobの</p>
-        <h2 class="text-4xl md:text-5xl headline mt-2">「ジョブシミュレーション」です。</h2>
+        <h2 class="text-3xl sm:text-4xl md:text-5xl headline mt-2">「ジョブシミュレーション」です。</h2>
         <p class="mt-6 max-w-3xl mx-auto text-indigo-100">
           貴社の業務やプロジェクトを、求職者がインタラクティブに「疑似体験」できるWebコンテンツです。「読む」だけの採用ページから、「参加する」採用コンテンツへ。求職者の事業理解を一気に深め、応募意欲を醸成する、全く新しい採用広報の手法です。
         </p>
@@ -145,12 +127,9 @@
       </div>
     </section>
 
-    <!-- 4. サービスの特徴 -->
-    <section class="py-16">
-      <h2 class="text-3xl md:text-4xl headline text-center">Right jobが選ばれる、3つの理由</h2>
+    <section class="py-12 md:py-16">
+      <h2 class="text-2xl sm:text-3xl md:text-4xl headline text-center">Right jobが選ばれる、3つの理由</h2>
       <div class="mt-12 space-y-12">
-
-        <!-- 特徴1 -->
         <div class="md:flex items-center gap-8">
           <div class="md:w-1/2">
             <svg viewBox="0 0 500 300" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" class="rounded-lg shadow-lg mx-auto w-full h-auto">
@@ -188,8 +167,6 @@
             </p>
           </div>
         </div>
-
-        <!-- 特徴2 -->
         <div class="md:flex flex-row-reverse items-center gap-8">
           <div class="md:w-1/2">
             <svg viewBox="0 0 500 300" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" class="rounded-lg shadow-lg mx-auto w-full h-auto">
@@ -221,8 +198,6 @@
             </p>
           </div>
         </div>
-
-        <!-- 特徴3 -->
         <div class="md:flex items-center gap-8">
           <div class="md:w-1/2">
             <svg viewBox="0 0 500 300" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" class="rounded-lg shadow-lg mx-auto w-full h-auto">
@@ -245,41 +220,29 @@
             </p>
           </div>
         </div>
-
       </div>
     </section>
 
-    <!-- 5. 他手法との比較 -->
-    <section class="py-16">
-      <h2 class="text-3xl md:text-4xl headline text-center">
+    <section class="py-12 md:py-16">
+      <h2 class="text-2xl sm:text-3xl md:text-4xl headline text-center">
         低コストで、求職者のニーズに<br class="md:hidden">最も響くアプローチを。
       </h2>
       <div class="mt-12 p-4 bg-white rounded-lg shadow-lg overflow-x-auto">
         <svg viewBox="0 0 500 350" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto min-w-[320px]">
-          <!-- Axis -->
           <line x1="50" y1="300" x2="450" y2="300" stroke="#9CA3AF" stroke-width="2"/>
           <text x="455" y="305" text-anchor="start" font-size="12">高</text>
           <text x="250" y="320" text-anchor="middle" font-size="12">求職者ニーズへの対応度</text>
-
           <line x1="50" y1="50" x2="50" y2="300" stroke="#9CA3AF" stroke-width="2"/>
           <text x="45" y="45" text-anchor="end" font-size="12">負担少</text>
           <text x="45" y="305" text-anchor="end" font-size="12">負担大</text>
-
-          <!-- 縦軸ラベル（rotateで実装） -->
           <g transform="translate(20,175) rotate(-90)">
             <text x="0" y="0" text-anchor="middle" font-size="12">導入・運用コスト</text>
           </g>
-
-          <!-- Quadrants -->
           <rect x="50" y="50" width="200" height="125" fill="#F3F4F6"/>
           <rect x="250" y="175" width="200" height="125" fill="#F3F4F6"/>
-
-          <!-- Items -->
           <text x="150" y="220" font-size="14" text-anchor="middle">SNS採用</text>
           <text x="150" y="250" font-size="14" text-anchor="middle">求人サイト(有料)</text>
           <text x="350" y="240" font-size="14" text-anchor="middle">動画・オウンドメディア</text>
-
-          <!-- Highlight -->
           <g>
             <rect x="260" y="60" width="180" height="105" fill="#ECFDF5" stroke="#10B981" stroke-width="2" rx="10"/>
             <circle cx="350" cy="90" r="15" fill="#10B981"/>
@@ -290,16 +253,13 @@
       </div>
     </section>
 
-    <!-- 6. 体験者の声 -->
-    <section class="py-16 bg-gray-100 rounded-xl">
-      <h2 class="text-3xl md:text-4xl headline text-center">
+    <section class="py-12 md:py-16 bg-gray-100 rounded-xl">
+      <h2 class="text-2xl sm:text-3xl md:text-4xl headline text-center">
         なぜ、求職者の心を動かすのか？<br />
         <span class="text-indigo-700">体験者の”生の声”</span>から見る3つの効果
       </h2>
-
       <div class="mt-12 space-y-10 max-w-4xl mx-auto">
-        <!-- EFFECT 1 -->
-        <div class="bg-white p-8 rounded-lg shadow-md md:flex gap-8 items-center">
+        <div class="bg-white p-6 sm:p-8 rounded-lg shadow-md md:flex gap-8 items-center">
           <div class="md:w-2/5 text-center">
             <p class="text-lg font-bold text-indigo-700">EFFECT 1</p>
             <h3 class="text-2xl font-bold mt-2">圧倒的な「解像度」</h3>
@@ -317,9 +277,7 @@
             </p>
           </div>
         </div>
-
-        <!-- EFFECT 2 -->
-        <div class="bg-white p-8 rounded-lg shadow-md md:flex gap-8 items-center">
+        <div class="bg-white p-6 sm:p-8 rounded-lg shadow-md md:flex gap-8 items-center">
           <div class="md:w-2/5 text-center">
             <p class="text-lg font-bold text-indigo-700">EFFECT 2</p>
             <h3 class="text-2xl font-bold mt-2">”納得感”のある応募</h3>
@@ -340,9 +298,7 @@
             </p>
           </div>
         </div>
-
-        <!-- EFFECT 3 -->
-        <div class="bg-white p-8 rounded-lg shadow-md md:flex gap-8 items-center">
+        <div class="bg-white p-6 sm:p-8 rounded-lg shadow-md md:flex gap-8 items-center">
           <div class="md:w-2/5 text-center">
             <p class="text-lg font-bold text-indigo-700">EFFECT 3</p>
             <h3 class="text-2xl font-bold mt-2">惹きつける「体験価値」</h3>
@@ -363,18 +319,17 @@
       </div>
     </section>
 
-    <!-- 7. 限定キャンペーン -->
-    <section id="contact" class="bg-orange-50 py-16 text-center rounded-xl">
-      <h2 class="text-3xl md:text-4xl headline text-orange-700">まずは無料で、効果を実感してください。</h2>
-      <p class="mt-4 text-xl font-bold">【20社限定】制作費無料キャンペーン実施中</p>
-      <p class="mt-6 max-w-2xl mx-auto text-gray-700">
+    <section id="contact" class="bg-orange-50 py-12 md:py-16 text-center rounded-xl">
+      <h2 class="text-2xl sm:text-3xl md:text-4xl headline text-orange-700">まずは無料で、効果を実感してください。</h2>
+      <p class="mt-4 text-lg md:text-xl font-bold">【20社限定】制作費無料キャンペーン実施中</p>
+      <p class="mt-6 max-w-2xl mx-auto text-gray-700 px-4">
         通常は有料のジョブシミュレーション制作を、今なら無料で実施します。この新しい採用広報の効果を実感いただき、サービス改善のための貴重なご意見をいただきたいためです。
       </p>
-      <div class="mt-10">
+      <div class="mt-10 px-4">
         <a
           href="https://forms.gle/p82Wj7cDY18Epunh9"
           target="_blank" rel="noopener noreferrer"
-          class="inline-block bg-orange-500 text-white font-bold text-lg py-4 px-10 rounded-lg shadow-md hover:bg-orange-600 transition-colors duration-300"
+          class="inline-block bg-orange-500 text-white font-bold text-lg py-4 px-6 sm:px-10 rounded-lg shadow-md hover:bg-orange-600 transition-colors duration-300"
         >
           【限定20社】制作費無料キャンペーンに申し込む
         </a>
@@ -382,17 +337,16 @@
       <p class="mt-4 text-sm text-gray-600">※ 上記ボタンをクリックすると申込フォームが開きます。</p>
     </section>
 
-    <!-- 8. 資料請求 -->
-    <section id="document" class="py-16 text-center">
+    <section id="document" class="py-12 md:py-16 text-center">
       <h2 class="text-2xl font-bold">まだ検討段階の方へ</h2>
-      <p class="mt-4 max-w-2xl mx-auto text-gray-700">
+      <p class="mt-4 max-w-2xl mx-auto text-gray-700 px-4">
         サービスのより詳しい情報や、他社の成功事例をまとめた資料をご用意しています。以下よりお気軽にお申し込みください。
       </p>
-      <div class="mt-8">
+      <div class="mt-8 px-4">
         <a
           href="https://drive.google.com/file/d/1DaH8fgfkApw7BibCYUonptEldZ1tAO51/view?usp=sharing"
           target="_blank" rel="noopener noreferrer"
-          class="inline-block bg-indigo-700 text-white font-bold py-4 px-10 rounded-lg shadow-md hover:bg-indigo-800 transition-colors duration-300"
+          class="inline-block bg-indigo-700 text-white font-bold py-4 px-8 sm:px-10 rounded-lg shadow-md hover:bg-indigo-800 transition-colors duration-300"
         >
           サービス詳細資料をダウンロードする
         </a>
@@ -400,7 +354,6 @@
       <p class="mt-4 text-sm text-gray-600">※ 上記ボタンをクリックすると資料(PDF)が新しいタブで開きます。</p>
     </section>
 
-    <!-- フッター -->
     <footer class="bg-gray-800 text-white text-center py-8 px-6 text-sm rounded-xl mb-8">
       <p>Right job株式会社</p>
       <p class="mt-2 text-gray-400">© 2025 Right job Inc. All rights reserved.</p>
