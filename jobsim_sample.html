@@ -4,12 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ジョブシミュレーション</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- PDF Generation Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- Chart.js (for radar charts) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* Base Styles */
@@ -51,11 +48,16 @@
         }
     </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-100 flex flex-col min-h-screen">
 
-    <div id="app" class="max-w-4xl mx-auto h-screen flex flex-col p-4">
+    <header id="main-header" class="w-full bg-white shadow-md p-3 px-6 flex justify-between items-center sticky top-0 z-20">
+        <div class="flex items-center gap-4">
+            <img id="main-header-logo" src="" alt="Company Logo" class="h-10 hidden">
+            <span id="main-header-company-name" class="text-xl font-bold text-gray-700"></span>
+        </div>
+    </header>
+    <div id="app" class="max-w-4xl mx-auto w-full flex-grow flex flex-col p-4">
 
-        <!-- Top Screen -->
         <div id="screen-top" class="flex flex-col items-center justify-start pt-20 h-full">
             <img id="topLogo" src="" alt="Company Logo" class="h-16 mb-6 hidden">
             <h1 id="gameTitle" class="text-4xl font-bold text-gray-800 mb-4 text-center"></h1>
@@ -66,7 +68,6 @@
             </div>
         </div>
 
-        <!-- Game Screen (Chat UI) -->
         <div id="screen-game" class="hidden h-full w-full flex flex-col bg-white rounded-2xl shadow-2xl overflow-hidden">
             <header class="bg-gray-800 text-white p-4 flex justify-between items-center shadow-md z-10">
                 <div class="flex items-center gap-4">
@@ -80,12 +81,10 @@
             </header>
             
             <main id="chat-container" class="chat-container flex-1 p-6 overflow-y-auto space-y-6">
-                <!-- Messages and choices will be dynamically added here -->
-            </main>
+                </main>
 
         </div>
 
-        <!-- Dashboard Screen -->
         <div id="screen-dashboard" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md m-4">
                 <h2 class="text-2xl font-bold mb-4 text-gray-800">現在のスコア</h2>
@@ -98,7 +97,6 @@
             </div>
         </div>
         
-        <!-- Guide Display Modal -->
         <div id="screen-hint" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md m-4">
                 <h2 class="text-2xl font-bold mb-4 text-gray-800">ガイド</h2>
@@ -109,7 +107,6 @@
             </div>
         </div>
 
-        <!-- Pre-Result Modal -->
         <div id="screen-pre-result" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-end justify-center z-50 pb-20">
             <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md m-4 text-center">
                 <p id="preResultMessage" class="text-2xl font-bold mb-8 text-gray-800"></p>
@@ -117,7 +114,6 @@
             </div>
         </div>
 
-        <!-- Result Screen -->
         <div id="screen-result" class="hidden flex-col items-center justify-center h-full p-4">
             <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-2xl text-center">
                 <h2 id="resultTitle" class="text-3xl font-bold text-gray-800 mb-4"></h2>
@@ -133,7 +129,6 @@
             </div>
         </div>
 
-        <!-- Retry Modal -->
         <div id="screen-retry" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
             <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md m-4 text-center">
                 <p class="text-xl mb-6 text-gray-800">再読み込み(F5リロード)してください</p>
@@ -142,7 +137,6 @@
         </div>
     </div>
 
-    <!-- Image Modal -->
     <div id="image-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 items-center justify-center z-50 p-4">
         <div class="relative max-w-4xl max-h-full">
             <img id="modal-image" src="" alt="拡大画像" class="rounded-lg shadow-xl object-contain max-w-full max-h-[90vh]">
@@ -153,8 +147,11 @@
             </button>
         </div>
     </div>
-
-<script>
+    
+    <footer id="main-footer" class="w-full bg-gray-800 text-white text-center p-4">
+        <p>&copy; Copyright © 2025 <span id="footer-company-name"></span> Rightjob All Rights Reserved.</p>
+    </footer>
+    <script>
 // --- Global Variables ---
 const SPREADSHEET_URL = 'https://script.google.com/macros/s/AKfycbw32Rz2l6whSBtk1hUjqxnjeb4v1B87oU9JshWDA6cOERROTlQpiJsNww_tJwsc3p6Y/exec'; // Replace with your provided GAS URL
 let gameData = {};
@@ -167,6 +164,11 @@ let finalEndContent = null; // To store final result data
 let lastDisplayedMessage = ''; // To prevent duplicate messages
 
 // --- DOM Elements ---
+// ▼▼▼【追加】ヘッダー・フッターの要素を取得 ▼▼▼
+const mainHeaderLogo = document.getElementById('main-header-logo');
+const mainHeaderCompanyName = document.getElementById('main-header-company-name');
+const footerCompanyName = document.getElementById('footer-company-name');
+// ▲▲▲【追加】ヘッダー・フッターの要素を取得 ▲▲▲
 const screens = {
     top: document.getElementById('screen-top'),
     game: document.getElementById('screen-game'),
@@ -253,6 +255,12 @@ async function initialize() {
 
         gameTitleEl.textContent = gameData.settings.gameTitle || 'ジョブシミュレーション';
         
+        // ▼▼▼【追加】ヘッダーとフッターに会社名を設定 ▼▼▼
+        if (gameData.settings.companyName) {
+            mainHeaderCompanyName.textContent = gameData.settings.companyName;
+            footerCompanyName.textContent = gameData.settings.companyName;
+        }
+
         // --- Logo Loading Logic with Error Handling ---
         if (gameData.settings.companyLogoUrl) {
             const topLogo = document.getElementById('topLogo');
@@ -271,8 +279,10 @@ async function initialize() {
             };
 
             loadImage(topLogo, 'トップ');
-            loadImage(headerLogo, 'ヘッダー');
+            loadImage(headerLogo, 'ゲームヘッダー');
+            loadImage(mainHeaderLogo, 'メインヘッダー'); // メインヘッダーのロゴも読み込む
         }
+        // ▲▲▲【追加】ここまで ▲▲▲
 
         Object.keys(gameData.scoreDefinitions).forEach(key => {
             scores[key] = 0;
@@ -287,6 +297,8 @@ async function initialize() {
         startButton.textContent = '読み込みエラー';
     }
 }
+
+// --- ここから下のJavaScriptコードは変更ありません ---
 
 function setupEventListeners() {
     startButton.addEventListener('click', startGame);
