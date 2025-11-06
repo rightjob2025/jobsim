@@ -1,293 +1,399 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" class="scroll-smooth">
 <head>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GT52HGDNZW"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){ dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-GT52HGDNZW');
-  </script>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>【スクリーニング工数削減】Right job ジョブシミュレーション</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet" />
-  <style>
-    body {
-      font-family: 'Noto Sans JP', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      overflow-wrap: break-word;
-    }
-    .headline { font-weight: 700; line-height: 1.6; }
-    html { scroll-behavior: smooth; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ジョブシミュレーションLP（大手企業向け）- Rightjob</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+        }
+        /* 大手企業向け: 信頼感のある濃紺(Indigo)をテーマカラーに */
+        .theme-bg { background-color: #3730A3; } /* Indigo-800 */
+        .theme-text { color: #1E3A8A; } /* Blue-900 */
+        .theme-border { border-color: #1E3A8A; }
+        .theme-bg-light { background-color: #DBEAFE; } /* Blue-100 */
+
+        /* CTAは信頼感を損ねない緑 */
+        .cta-button {
+            background-color: #059669; /* Emerald-600 */
+            transition: background-color 0.3s;
+        }
+        .cta-button:hover {
+            background-color: #047857; /* Emerald-700 */
+        }
+
+        /* FAQアコーディオン用 */
+        .faq-question::after {
+            content: '+';
+            font-size: 1.5rem;
+            color: #1E3A8A; /* theme-text */
+            transition: transform 0.3s ease;
+        }
+        .faq-item.open .faq-question::after {
+            transform: rotate(45deg);
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .faq-item.open .faq-answer {
+            max-height: 500px; /* 十分な高さを確保 */
+            padding-top: 1rem;
+        }
+        /* テキストの影 */
+        .shadow-text {
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+    </style>
+    <!-- Google Analytics タグ -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GT52HGDNZW"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+      gtag('js', new Date());
+    
+      gtag('config', 'G-GT52HGDNZW');
+    </script>
 </head>
-<body class="bg-gray-50 text-gray-800">
-  <div class="mx-auto max-w-screen-lg lg:max-w-5xl px-4 sm:px-6 lg:px-8">
-    <!-- HERO: メッセージをスクリーニング工数削減に特化 -->
-    <header
-      class="relative text-left shadow-sm bg-cover bg-center overflow-hidden rounded-xl mt-4"
-      style="background-image:url('https://i.imgur.com/Hyit5uh.jpg?q=80&w=1600&auto=format&fit=crop');"
-    >
-      <div class="absolute inset-0 bg-teal-800/70"></div>
-      <div class="relative mx-auto h-full flex items-center px-6 py-12 sm:px-8 min-h-[360px] sm:min-h-[420px] md:min-h-[520px] lg:min-h-[600px]">
-        <div class="w-full max-w-2xl md:max-w-3xl">
-          <h1 class="text-3xl sm:text-4xl md:text-5xl headline text-white leading-tight">
-            応募者のスクリーニング、<br>まだ人海戦術で消耗しますか？
-          </h1>
-          <p class="mt-4 text-lg sm:text-xl md:text-2xl font-bold text-white">
-            会うべき候補者だけが応募してくる。<br>「体験型」スクリーニングで、採用の質と効率を最大化。
-          </p>
-          <div class="mt-8 flex flex-col sm:flex-row gap-4 sm:gap-5 flex-wrap">
-            <a
-              href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2b7cWlxzaAvWUdQiAx4CqokETd3nPk4R9tZIvsHzR_rFDnBe2e9FMVnYnt32ixfJSruDg1-RFo"
-              target="_blank" rel="noopener noreferrer"
-              class="w-full sm:w-auto inline-flex justify-center items-center bg-orange-500 text-white font-bold text-base md:text-lg py-3 md:py-4 px-6 md:px-8 rounded-lg shadow-md hover:bg-orange-600 transition-colors duration-300 min-w-0"
-            >
-              採用効率化の相談をする (無料)
+<body class="bg-white text-gray-800">
+
+    <!-- 1. ファーストビュー -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold theme-text">Rightjob</div>
+            <a href="https://calendar.app.google/m3GUYkHfwfmo9YfS6" target="_blank" rel="noopener noreferrer" class="cta-button text-white font-bold py-2 px-6 rounded-full hidden md:inline-block">
+                まず無料で相談してみる
             </a>
-            <a
-              href="https://drive.google.com/file/d/1DaH8fgfkApw7BibCYUonptEldZ1tAO51/view"
-              target="_blank" rel="noopener noreferrer"
-              class="w-full sm:w-auto inline-flex justify-center items-center bg-white text-gray-700 font-bold text-base md:text-lg py-3 md:py-4 px-6 md:px-8 rounded-lg hover:bg-gray-100 transition-colors duration-300 min-w-0"
-            >
-              サービス資料を見てみる
-            </a>
-          </div>
-        </div>
-      </div>
+        </nav>
     </header>
 
-    <!-- PROBLEM: 課題提起を「スクリーニング工数」にフォーカス -->
-    <section class="py-12 md:py-16">
-      <h2 class="text-2xl sm:text-3xl md:text-4xl headline text-center">
-        応募者のスクリーニング、<br class="md:hidden">こんな課題はありませんか？
-      </h2>
-      <div class="mt-12 grid md:grid-cols-2 gap-10 md:gap-12 items-center">
-        <div class="p-2">
-            <!-- SVGイラストを最終修正 -->
-            <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" class="rounded-lg shadow-lg mx-auto w-full h-auto bg-teal-50">
-                <text x="50%" y="35" font-family="Noto Sans JP, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#0D9488">採用におけるミスマッチ</text>
+    <main>
+        <!-- ファーストビュー セクション (背景画像適用) -->
+        <section class="relative bg-cover bg-center pt-20 pb-20 md:pt-28 md:pb-28 text-center text-white" style="background-image: url('https://i.imgur.com/Hyit5uh.jpg');">
+            <!-- 背景画像オーバーレイ -->
+            <div class="absolute inset-0 bg-gray-900 bg-opacity-70"></div>
 
-                <!-- Applicant Icon -->
-                <g transform="translate(50, 150)">
-                    <circle cx="0" cy="0" r="35" fill="#5EEAD4"/>
-                    <text x="0" y="5" text-anchor="middle" font-size="24">🙂</text>
-                    <text x="0" y="50" text-anchor="middle" font-weight="bold" fill="#115E59">応募者</text>
-                </g>
+            <div class="container mx-auto px-6 relative z-10">
+                <!-- 大手向けコピー -->
+                <h1 class="text-3xl md:text-5xl font-extrabold mb-6 leading-tight shadow-text">
+                    <span class="text-blue-300">"質"の高い採用</span>を効率化。<br>
+                    面接工数を削減します。
+                </h1>
+                <p class="text-lg md:text-xl text-gray-200 mb-10 max-w-2xl mx-auto shadow-text">
+                    事業理解を深めた候補者と、本質的な面接を。
+                    <br>エージェント経由の応募者スクリーニングにも最適です。
+                </p>
+                <a href="https://calendar.app.google/m3GUYkHfwfmo9YfS6" target="_blank" rel="noopener noreferrer" class="cta-button text-white font-extrabold py-4 px-10 rounded-full text-lg transition-transform transform hover:scale-105 shadow-lg">
+                    まず無料で相談してみる
+                </a>
+            </div>
+        </section>
 
-                <!-- Recruiter Icon -->
-                <g transform="translate(350, 150)">
-                    <circle cx="0" cy="0" r="35" fill="#A78BFA"/>
-                    <text x="0" y="5" text-anchor="middle" font-size="24">🤔</text>
-                    <text x="0" y="50" text-anchor="middle" font-weight="bold" fill="#4C1D95">採用担当</text>
-                </g>
-
-                <!-- Central Bubble -->
-                <g transform="translate(100, 95)">
-                    <rect x="0" y="0" width="200" height="110" rx="15" fill="white" stroke="#CBD5E1" stroke-width="1.5"/>
-                    <!-- Pointer to Applicant -->
-                    <path d="M 0 50 L -15 55 L 0 60 Z" fill="white" stroke="#CBD5E1" stroke-width="1.5"/>
-                    <!-- Pointer to Recruiter -->
-                    <path d="M 200 50 L 215 55 L 200 60 Z" fill="white" stroke="#CBD5E1" stroke-width="1.5"/>
-                </g>
-
-                <!-- Text for Recruiter -->
-                <text x="200" y="125" text-anchor="middle" font-size="13" fill="#4C1D95">
-                    <tspan x="200" dy="0">スキルは良いけど</tspan>
-                    <tspan x="200" dy="1.2em">カルチャーが合わないかも…</tspan>
-                </text>
-
-                <!-- Divider Line -->
-                <line x1="120" y1="150" x2="280" y2="150" stroke="#E2E8F0" stroke-width="1"/>
-
-                <!-- Text for Applicant -->
-                <text x="200" y="178" text-anchor="middle" font-size="13" fill="#115E59">
-                    <tspan x="200" dy="0">聞いていた業務内容と</tspan>
-                    <tspan x="200" dy="1.2em">少しイメージが違うな…</tspan>
-                </text>
-            </svg>
-        </div>
-        <div>
-          <h3 class="text-xl font-bold text-teal-700">スキルは良い。でも、何かが違う…</h3>
-          <p class="mt-4 text-gray-600">
-            書類や短時間の面接だけでは、候補者の価値観やカルチャーフィットまで見抜くのは困難です。結果として、「スキルは申し分ないのに、社風に合わない」「入社後のギャップで早期離職に…」といったミスマッチが発生し、貴重な採用コストと時間が無駄になってしまいます。<br><br>
-            <span class="font-bold text-lg mt-4 block">その "見極め"、候補者自身に体験してもらいませんか？</span>
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- SOLUTION: ジョブシムの提供価値を「スクリーニング機能」として提示 -->
-    <section class="bg-teal-700 text-white py-12 md:py-16 px-6 sm:px-8 rounded-xl">
-      <div class="text-center">
-        <p class="text-teal-300 font-bold">その答えが、Right jobの</p>
-        <h2 class="text-3xl sm:text-4xl md:text-5xl headline mt-2">「体験型スクリーニング」です。</h2>
-        <p class="mt-6 max-w-3xl mx-auto text-teal-100">
-          応募前に、候補者自身が業務を「疑似体験」し、貴社とのマッチ度をセルフチェックできるWebコンテンツです。これにより、意欲とカルチャーフィット感の高い候補者だけが応募。採用工数を大幅に削減し、選考の質を高めます。
-        </p>
-      </div>
-      <div class="mt-12 grid sm:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
-        <div class="bg-white/10 p-6 rounded-lg transform hover:scale-105 transition-transform duration-300">
-          <h3 class="text-xl font-bold">応募の”質”を向上</h3>
-          <p class="mt-2 text-teal-100 text-sm">業務理解と覚悟を持った候補者のみが応募。スクリーニング工数を大幅に削減します。</p>
-        </div>
-        <div class="bg-white/10 p-6 rounded-lg transform hover:scale-105 transition-transform duration-300">
-          <h3 class="text-xl font-bold">選考・面接の効率化</h3>
-          <p class="mt-2 text-teal-100 text-sm">面接前に深い事業理解が済んでいるため、本質的な見極めに集中でき、面接時間が短縮されます。</p>
-        </div>
-        <div class="bg-white/10 p-6 rounded-lg transform hover:scale-105 transition-transform duration-300">
-          <h3 class="text-xl font-bold">定着率の向上</h3>
-          <p class="mt-2 text-teal-100 text-sm">入社後のギャップが少ないため、早期離職を防ぎ、長期的な活躍が期待できます。</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- REASON: 訴求に合わせ、セクションの順番と内容を変更 -->
-    <section class="py-12 md:py-16">
-        <h2 class="text-2xl sm:text-3xl md:text-4xl headline text-center">
-            なぜ「体験」が、最高の<br class="md:hidden">スクリーニングになるのか？
-        </h2>
-        <div class="mt-12 space-y-10 max-w-4xl mx-auto">
-            <!-- EFFECT2を最初に持ってきて強調 -->
-            <div class="bg-white p-6 sm:p-8 rounded-lg shadow-md md:flex gap-8 items-center">
-                <div class="md:w-2/5 text-center">
-                    <p class="text-lg font-bold text-teal-700">POINT 1</p>
-                    <h3 class="text-2xl font-bold mt-2">セルフスクリーニング</h3>
-                    <p class="mt-2 text-gray-600">「自分に合うか」の<br />判断軸を提供する</p>
-                    <p class="mt-4 text-4xl font-bold text-teal-700">80<span class="text-2xl">%</span><span class="text-lg font-normal text-gray-500">以上が</span></p>
-                    <p class="text-sm text-gray-500">仕事とのマッチ度がわかると回答</p>
+        <!-- 3. 実績・成果セクション (大手向けに早期に配置) -->
+        <section class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">
+                        <span class="theme-text">採用工数削減</span>と<span class="theme-text">応募の質</span>の実績
+                    </h2>
                 </div>
-                <div class="md:w-3/5 mt-6 md:mt-0 border-t md:border-t-0 md:border-l border-gray-200 pt-6 md:pt-0 md:pl-8">
-                    <p class="text-lg font-bold">体験者の声</p>
-                    <blockquote class="mt-2 p-4 bg-gray-100 rounded-md text-gray-700 text-sm border-l-4 border-teal-500">
-                        「体験して『自分には合わないかも』とはっきり分かった。これはお互いにとって時間の無駄がなく、良いことだと思う。」
-                    </blockquote>
-                    <blockquote class="mt-2 p-4 bg-gray-100 rounded-md text-gray-700 text-sm border-l-4 border-teal-500">
-                        「自分もできそうという気持ちになり、働くイメージが湧いて応募意欲が高まった。」
-                    </blockquote>
-                    <p class="mt-4 font-bold text-sm text-gray-800">
-                        → 応募者自身による事前の見極めが、<span class="text-green-700">採用ミスマッチの防止と選考の効率化</span>に直結します。
-                    </p>
+                
+                <!-- 数値で見る効果 (大手向けに強調) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 text-center max-w-2xl mx-auto">
+                    <div class="bg-gray-50 p-6 rounded-xl shadow-md border border-gray-200">
+                        <div class="text-5xl font-extrabold theme-text mb-2">-20<span class="text-3xl">分</span></div>
+                        <h3 class="text-lg font-bold text-gray-900">面接時間を短縮</h3>
+                        <p class="text-gray-600">(事業説明の省略)</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl shadow-md border border-gray-200">
+                        <div class="text-5xl font-extrabold theme-text mb-2">↓</div>
+                        <h3 class="text-lg font-bold text-gray-900">カジュアル面談前の離脱減</h3>
+                        <p class="text-gray-600">(仕事理解の向上)</p>
+                    </div>
+                </div>
+
+                <!-- 企業担当者の生の声 -->
+                <div class="space-y-8 max-w-4xl mx-auto">
+                    <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 flex flex-col md:flex-row items-center">
+                        <!-- アイコン -->
+                        <div class="flex-shrink-0 w-24 h-24 rounded-full theme-bg-light flex items-center justify-center mb-4 md:mb-0 md:mr-6">
+                            <svg class="w-16 h-16 theme-text" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            </svg>
+                        </div>
+                        <div class="text-center md:text-left">
+                            <blockquote class="text-lg text-gray-700 italic mb-4">
+                                "コンサル職の選考フローの1つとして使えるレベル。役員も面接で活用したいと言っています。"
+                            </blockquote>
+                            <p class="font-bold text-gray-900">コンサルティング企業 採用責任者</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <!-- EFFECT1 -->
-            <div class="bg-white p-6 sm:p-8 rounded-lg shadow-md md:flex gap-8 items-center">
-                <div class="md:w-2/5 text-center">
-                    <p class="text-lg font-bold text-teal-700">POINT 2</p>
-                    <h3 class="text-2xl font-bold mt-2">圧倒的な「業務理解」</h3>
-                    <p class="mt-2 text-gray-600">事業内容への理解を<br />“自分ごと”にする</p>
-                    <p class="mt-4 text-4xl font-bold text-teal-700">90<span class="text-2xl">%</span><span class="text-lg font-normal text-gray-500">以上が</span></p>
-                    <p class="text-sm text-gray-500">業務理解が深まったと回答</p>
-                </div>
-                <div class="md:w-3/5 mt-6 md:mt-0 border-t md:border-t-0 md:border-l border-gray-200 pt-6 md:pt-0 md:pl-8">
-                    <p class="text-lg font-bold">体験者の声</p>
-                    <blockquote class="mt-2 p-4 bg-gray-100 rounded-md text-gray-700 text-sm border-l-4 border-teal-500">
-                        「採用ページを見るよりも、具体的な業務の流れや意思決定の場面がリアルに想像でき、理解が進んだ感覚があった。」
-                    </blockquote>
-                    <p class="mt-4 font-bold text-sm text-gray-800">
-                        → 候補者の理解が深まることで、面接ではより本質的な対話に集中でき、<span class="text-green-700">選考の質と効率が向上します。</span>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- HOW IT WORKS: 導入の手軽さを訴求 -->
-    <section class="py-12 md:py-16 bg-gray-100 rounded-xl">
-        <h2 class="text-2xl sm:text-3xl md:text-4xl headline text-center">導入は、驚くほど簡単。</h2>
-        <div class="mt-12 space-y-12">
-            <div class="md:flex flex-row-reverse items-center gap-8">
-                <div class="md:w-1/2">
-                    <!-- デザインを改善したSVG -->
-                    <svg viewBox="0 0 500 300" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" class="rounded-lg w-full h-auto">
-                        <defs>
-                            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" style="stop-color:#A78BFA;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#818CF8;stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
-                        <text x="50%" y="40" font-size="18" font-weight="bold" text-anchor="middle" fill="#4338CA">最短1ヶ月でスクリーニングを自動化</text>
-                        <!-- Step 1 -->
-                        <g transform="translate(90, 150)">
-                            <circle cx="0" cy="0" r="40" fill="url(#grad1)"/>
-                            <text x="0" y="5" font-size="24" fill="white" font-weight="bold" text-anchor="middle">1</text>
-                            <text x="0" y="65" text-anchor="middle" font-size="14" fill="#3730A3">ヒアリング</text>
-                        </g>
-                        <!-- Arrow 1 -->
-                        <line x1="155" y1="150" x2="215" y2="150" stroke="#C4B5FD" stroke-width="2" stroke-dasharray="5,5"/>
-                        <!-- Step 2 -->
-                        <g transform="translate(250, 150)">
-                            <circle cx="0" cy="0" r="40" fill="url(#grad1)"/>
-                            <text x="0" y="5" font-size="24" fill="white" font-weight="bold" text-anchor="middle">2</text>
-                             <text x="0" y="65" text-anchor="middle" font-size="14" fill="#3730A3">シナリオ設計</text>
-                        </g>
-                        <!-- Arrow 2 -->
-                         <line x1="315" y1="150" x2="375" y2="150" stroke="#C4B5FD" stroke-width="2" stroke-dasharray="5,5"/>
-                        <!-- Step 3 -->
-                        <g transform="translate(410, 150)">
-                            <circle cx="0" cy="0" r="40" fill="url(#grad1)"/>
-                            <text x="0" y="5" font-size="24" fill="white" font-weight="bold" text-anchor="middle">3</text>
-                             <text x="0" y="65" text-anchor="middle" font-size="14" fill="#3730A3">制作・公開</text>
-                        </g>
-                    </svg>
+        <!-- 4. 活用シーン別提案 (大手向けにエージェント連携・選考プロセスを強調) -->
+        <section class="py-16 md:py-24 theme-bg-light">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">
+                        <span class="theme-text">面接工数削減</span>と<span class="theme-text">スクリーニング</span>に
+                    </h2>
                 </div>
-                <div class="md:w-1/2 mt-6 md:mt-0 text-center md:text-left">
-                    <h3 class="text-2xl font-bold text-indigo-700">【最短1ヶ月】で導入できる<br>スピード感と手軽さ</h3>
-                    <p class="mt-4 text-gray-600">
-                    面倒なシステム開発は不要です。ヒアリング後、最短1ヶ月で貴社独自のジョブシミュレーションを制作・公開できます。すぐに採用効率の改善に着手できます。
-                    </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- エージェント (強調) -->
+                    <div class="bg-white p-8 rounded-xl shadow-lg border-2 theme-border">
+                        <span class="text-3xl">🤝</span>
+                        <h3 class="text-2xl font-bold text-gray-900 mt-3 mb-4">エージェント連携</h3>
+                        <p class="text-gray-600 mb-4">エージェントにURLを共有。応募者の理解度を標準化し、スクリーニングの質と効率を高めます。</p>
+                        <div class="theme-bg-light p-4 rounded-lg">
+                            <h4 class="font-bold theme-text mb-2">実装方法:</h4>
+                            <p class="text-sm text-gray-700">エージェントにURLを共有するだけ</p>
+                        </div>
+                    </div>
+                    <!-- 選考プロセス (強調) -->
+                    <div class="bg-white p-8 rounded-xl shadow-lg border-2 theme-border">
+                        <span class="text-3xl">📝</span>
+                        <h3 class="text-2xl font-bold text-gray-900 mt-3 mb-4">選考プロセス</h3>
+                        <p class="text-gray-600 mb-4">面接前の事前課題として設定。事業理解を深め、面接での説明工数を削減し、本質的な見極めに集中できます。</p>
+                        <div class="theme-bg-light p-4 rounded-lg">
+                            <h4 class="font-bold theme-text mb-2">実装方法:</h4>
+                            <p class="text-sm text-gray-700">書類選考通過者にメールで案内</p>
+                        </div>
+                    </div>
+                    <!-- スカウト -->
+                    <div class="bg-white p-8 rounded-xl shadow-lg">
+                        <span class="text-3xl">📧</span>
+                        <h3 class="text-2xl font-bold text-gray-900 mt-3 mb-4">スカウト・母集団形成</h3>
+                        <p class="text-gray-600 mb-4">スカウトメールにURLを1行追加。応募前に仕事理解が進み、意欲の高い候補者が集まります。</p>
+                        <div class="theme-bg-light p-4 rounded-lg">
+                            <h4 class="font-bold theme-text mb-2">実装方法:</h4>
+                            <p class="text-sm text-gray-700">スカウトメール文面にURLを1行追加</p>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </section>
+
+        <!-- ★ デモ体験セクション -->
+        <section class="py-16 md:py-24 bg-gray-50">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">
+                    実際のシミュレーションを<span class="theme-text">体験</span>
+                </h2>
+                <p class="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">
+                    実際のジョブシミュレーションがどのように動作するか、こちらで直接お試しいただけます。
+                </p>
+                
+                <!-- iFrame埋め込み (ブラウザ風デザイン) -->
+                <div class="max-w-5xl mx-auto bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-200">
+                    <!-- ブラウザのヘッダー部分 -->
+                    <div class="bg-gray-100 p-3 flex items-center border-b border-gray-200">
+                        <span class="w-3 h-3 bg-red-400 rounded-full mr-2"></span>
+                        <span class="w-3 h-3 bg-yellow-400 rounded-full mr-2"></span>
+                        <span class="w-3 h-3 bg-green-400 rounded-full"></span>
+                        <div class="ml-4 bg-gray-200 text-gray-600 text-sm px-4 py-1 rounded-full w-full max-w-md truncate">
+                            https://rightjob2025.github.io/jobsim/jobsim_sample.html
+                        </div>
+                    </div>
+                    <!-- 埋め込みコンテンツ -->
+                    <iframe 
+                        src="https://rightjob2025.github.io/jobsim/jobsim_sample.html" 
+                        frameborder="0" 
+                        allowfullscreen
+                        class="w-full"
+                        style="min-height: 700px;">
+                    </iframe>
+                </div>
+            </div>
+        </section>
+        <!-- ★ デモ体験ここまで -->
+
+        <!-- 2. 課題提起セクション (大手向け) -->
+        <section class="py-16 md:py-24 bg-gray-900 text-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-extrabold mb-4">
+                        採用の「質」と「効率」の<span class="text-yellow-400">ジレンマ</span>
+                    </h2>
+                    <p class="text-lg text-gray-300">その課題、ジョブシミュレーションが解決します。</p>
+                </div>
+                <div class="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-gray-800 p-6 rounded-lg border border-gray-700">
+                        <span class="text-2xl">✓</span>
+                        <p class="text-lg font-semibold ml-2 inline">面接工数が膨大で、人事部が疲弊している</p>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-lg border border-gray-700">
+                        <span class="text-2xl">✓</span>
+                        <p class="text-lg font-semibold ml-2 inline">エージェント経由の応募者の理解度にバラつきがある</p>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-lg border border-gray-700">
+                        <span class="text-2xl">✓</span>
+                        <p class="text-lg font-semibold ml-2 inline">面接で毎回同じ事業説明を繰り返している</p>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-lg border border-gray-700">
+                        <span class="text-2xl">✓</span>
+                        <p class="text-lg font-semibold ml-2 inline">入社後に「思っていた仕事と違う」と言われる</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. 料金・サポート (大手向けに信頼感) -->
+        <section class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">
+                        <span class="theme-text">無料</span>での効果検証から
+                    </h2>
+                    <p class="text-lg text-gray-600">まずはリスクなく、貴社の採用フローで効果をお試しください。</p>
+                </div>
+                
+                <div class="max-w-4xl mx-auto md:flex md:space-x-8">
+                    <div class="md:w-1/2 bg-gray-50 p-8 rounded-xl shadow-md border border-gray-200 mb-6 md:mb-0">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-4">料金プラン</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-center">
+                                <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                <span class="text-lg">1テーマの制作・運用 <span class="font-bold text-2xl theme-text ml-2">完全無料</span></span>
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                <span class="text-lg">2テーマ目以降も月額低コストで運用可能</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="md:w-1/2 theme-bg-light p-8 rounded-xl">
+                        <h3 class="text-2xl font-bold theme-text mb-4">万全のサポート体制</h3>
+                        <p class="text-gray-700">
+                            「ジョブシミュレーション」の効果を実感いただくため、1テーマ無料のプランをご提供しています。
+                            <br><br>
+                            導入時のシナリオ設計から運用まで、専任の担当者が貴社の採用成功をサポートします。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. FAQ -->
+        <section class="py-16 md:py-24 bg-gray-50">
+            <div class="container mx-auto px-6 max-w-4xl">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">
+                        よくあるご質問
+                    </h2>
+                </div>
+                <div id="faq-container" class="space-y-6">
+                    <!-- Q1 -->
+                    <div class="faq-item border border-gray-200 rounded-lg p-6 bg-white">
+                        <button class="faq-question w-full flex justify-between items-center text-left">
+                            <span class="text-xl font-semibold text-gray-900">Q: どんな職種に向いていますか？</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p class="text-gray-700 theme-bg-light rounded-lg p-4">
+                                A: 営業、マーケティング、エンジニア、カスタマーサポート、コンサルタントなど、デスクワーク中心の職種で特に効果を発揮します。思考プロセスや判断軸を問うシナリオが作成可能です。
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Q2 -->
+                    <div class="faq-item border border-gray-200 rounded-lg p-6 bg-white">
+                        <button class="faq-question w-full flex justify-between items-center text-left">
+                            <span class="text-xl font-semibold text-gray-900">Q: 作成にどれくらい時間がかかりますか？</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p class="text-gray-700 theme-bg-light rounded-lg p-4">
+                                A: 弊社での制作は最短2週間で可能です。ヒアリング（または資料提供）から初稿提出まで約1週間、修正・公開まで1週間が目安です。
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Q3 -->
+                    <div class="faq-item border border-gray-200 rounded-lg p-6 bg-white">
+                        <button class="faq-question w-full flex justify-between items-center text-left">
+                            <span class="text-xl font-semibold text-gray-900">Q: 応募者の体験データは確認できますか？</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p class="text-gray-700 theme-bg-light rounded-lg p-4">
+                                A: はい、専用の管理画面から応募者の回答データや体験時間などを確認できます。選考の参考情報としてご活用いただけます。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. CTA (行動喚起) -->
+        <section id="cta" class="py-16 md:py-24 bg-gray-900 text-white">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl md:text-4xl font-extrabold mb-6">
+                    採用の質を変える第一歩を
+                </h2>
+                <p class="text-lg text-gray-300 mb-10 max-w-2xl mx-auto">
+                    まずは無料プランについて、お気軽にご相談ください。
+                </p>
+                <a href="https://calendar.app.google/m3GUYkHfwfmo9YfS6" target="_blank" rel="noopener noreferrer" class="cta-button text-white font-extrabold py-4 px-10 rounded-full text-lg transition-transform transform hover:scale-105 shadow-lg">
+                    まず無料で相談してみる
+                </a>
+
+                <div class="mt-16 border-t border-gray-700 pt-10 flex flex-col md:flex-row justify-center gap-6">
+                    <a href="https://docs.google.com/forms/d/1lToq7kDKAOyXFuW8kgv3QEgoI8JlXFVU0gGOVbsB09I/edit" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white border border-gray-600 hover:border-white py-3 px-6 rounded-full transition-colors">
+                        サービス資料をダウンロード
+                    </a>
+                    <a href="https://calendar.app.google/m3GUYkHfwfmo9YfS6" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white border border-gray-600 hover:border-white py-3 px-6 rounded-full transition-colors">
+                        30分でわかるオンライン説明会に参加
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- フッター -->
+    <footer class="bg-gray-800 text-gray-400 py-10">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2025 Rightjob Inc. All rights reserved.</p>
+            <div class="flex justify-center space-x-6 mt-4">
+                <a href="https://rightjob.info/one-record-company/" class="hover:text-white" target="_blank" rel="noopener noreferrer">会社概要</a>
+                <a href="#" class="hover:text-white">プライバシーポリシー</a>
+                <a href="https://drive.google.com/file/d/1fyB0vvtnjB4ed6dG0zaIffjrb39Nedi-/view" class="hover:text-white" target="_blank" rel="noopener noreferrer">利用規約</a>
+            </div>
         </div>
-    </section>
-
-    <!-- CTA -->
-    <section id="contact" class="bg-orange-50 py-12 md:py-16 text-center rounded-xl my-12">
-      <h2 class="text-2xl sm:text-3xl md:text-4xl headline text-orange-700">まずは無料で、採用の効率化を実感してください。</h2>
-      <p class="mt-4 text-lg md:text-xl font-bold">【20社限定】制作費無料キャンペーン実施中</p>
-      <p class="mt-6 max-w-2xl mx-auto text-gray-700 px-4">
-        体験型スクリーニングが、どれだけ採用工数を削減し、応募の質を高めるか。まずは無料で、その効果を実感してください。
-      </p>
-      <div class="mt-10 px-4">
-        <a
-          href="https://forms.gle/p82Wj7cDY18Epunh9"
-          target="_blank" rel="noopener noreferrer"
-          class="inline-block bg-orange-500 text-white font-bold text-base sm:text-lg py-4 px-6 sm:px-10 rounded-lg shadow-md hover:bg-orange-600 transition-transform transform hover:scale-105 duration-300"
-        >
-          【限定20社】制作費無料キャンペーンに申し込む
-        </a>
-      </div>
-      <p class="mt-4 text-sm text-gray-600">※ 上記ボタンをクリックすると申込フォームが開きます。</p>
-    </section>
-
-    <!-- 資料請求 -->
-    <section id="document" class="py-12 md:py-16 text-center">
-      <h2 class="text-2xl font-bold">まだ検討段階の方へ</h2>
-      <p class="mt-4 max-w-2xl mx-auto text-gray-700 px-4">
-        サービスのより詳しい情報や、他社の成功事例をまとめた資料をご用意しています。以下よりお気軽にお申し込みください。
-      </p>
-      <div class="mt-8 px-4">
-        <a
-          href="https://drive.google.com/file/d/1DaH8fgfkApw7BibCYUonptEldZ1tAO51/view?usp=sharing"
-          target="_blank" rel="noopener noreferrer"
-          class="inline-block bg-indigo-700 text-white font-bold text-base sm:text-lg py-4 px-8 sm:px-10 rounded-lg shadow-md hover:bg-indigo-800 transition-colors duration-300"
-        >
-          サービス詳細資料をダウンロードする
-        </a>
-      </div>
-      <p class="mt-4 text-sm text-gray-600">※ 上記ボタンをクリックすると資料(PDF)が新しいタブで開きます。</p>
-    </section>
-
-    <footer class="bg-gray-800 text-white text-center py-8 px-6 text-sm rounded-xl mb-8">
-      <p>Right job株式会社</p>
-      <p class="mt-2 text-gray-400">© 2025 Right job Inc. All rights reserved.</p>
     </footer>
-  </div>
+
+    <script>
+        // FAQのアコーディオン機能
+        document.addEventListener('DOMContentLoaded', function () {
+            const faqContainer = document.getElementById('faq-container');
+            if (faqContainer) {
+                faqContainer.addEventListener('click', function (e) {
+                    const questionButton = e.target.closest('.faq-question');
+                    if (questionButton) {
+                        const faqItem = questionButton.closest('.faq-item');
+                        
+                        // クリックされたアイテム以外の開いているアイテムを閉じる
+                        const openItems = faqContainer.querySelectorAll('.faq-item.open');
+                        openItems.forEach(item => {
+                            if (item !== faqItem) {
+                                item.classList.remove('open');
+                                item.querySelector('.faq-answer').style.maxHeight = '0';
+                            }
+                        });
+
+                        // クリックされたアイテムの開閉トグル
+                        faqItem.classList.toggle('open');
+                        const answer = faqItem.querySelector('.faq-answer');
+                        if (faqItem.classList.contains('open')) {
+                            answer.style.maxHeight = answer.scrollHeight + 'px';
+                        } else {
+                            answer.style.maxHeight = '0';
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+
 </body>
 </html>
-
