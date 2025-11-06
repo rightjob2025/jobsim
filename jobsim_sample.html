@@ -63,12 +63,10 @@
             <h1 id="gameTitle" class="text-4xl font-bold text-gray-800 mb-4 text-center"></h1>
             <p class="text-gray-600 mb-8">あなたのキャリアを選択するシミュレーションゲーム</p>
             <div class="w-full max-w-sm">
-                 <input type="text" id="userName" placeholder="あなたの名前を入力してください" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4 text-lg">
                  <button id="startButton" class="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition duration-300 shadow-lg text-lg disabled:bg-gray-400">シミュレーションを開始</button>
             </div>
         </div>
 
-        <!-- ▼▼▼【修正】h-fullを削除し、インラインstyleで高さを固定 ▼▼▼ -->
         <div id="screen-game" class="hidden w-full flex flex-col bg-white rounded-2xl shadow-2xl overflow-hidden" style="height: 75vh; max-height: 700px;">
             <header class="bg-gray-800 text-white p-4 flex justify-between items-center shadow-md z-10">
                 <div class="flex items-center gap-4">
@@ -157,7 +155,7 @@
 const SPREADSHEET_URL = 'https://script.google.com/macros/s/AKfycbzYqgF0z3Wcep1IxeMs3SP0dUx9bsrXY-21s6cQJa7PZt2PWoi7YZQH7USno-ypTXf6/exec'; // Replace with your provided GAS URL
 let gameData = {};
 let scores = {};
-let userName = '';
+let userName = '天職 太郎'; // ★修正: 名前を固定値に変更
 let currentPhaseId = 'prologue'; // Starting phase ID
 let phaseRenderCounter = 0; // For infinite loop detection
 const MAX_CONSECUTIVE_RENDERS = 50; // Max phase changes without user interaction
@@ -179,7 +177,7 @@ const screens = {
     retry: document.getElementById('screen-retry'),
 };
 const gameTitleEl = document.getElementById('gameTitle');
-const userNameInput = document.getElementById('userName');
+// const userNameInput = document.getElementById('userName'); // ★削除
 const startButton = document.getElementById('startButton');
 const chatContainer = document.getElementById('chat-container');
 const phaseTitleEl = document.getElementById('phaseTitle');
@@ -228,7 +226,7 @@ function fetchJSONP(url) {
 
 async function initialize() {
     setupEventListeners();
-    userNameInput.value = localStorage.getItem('jobsim_userName') || '';
+    // userNameInput.value = localStorage.getItem('jobsim_userName') || ''; // ★削除
     
     if(copyrightYearEl) {
         copyrightYearEl.textContent = new Date().getFullYear();
@@ -289,7 +287,7 @@ async function initialize() {
         });
 
         startButton.textContent = 'シミュレーションを開始';
-        validateUserName();
+        validateUserName(); // ★修正: この関数も修正済み
 
     } catch (error) {
         console.error('Failed to load game data:', error);
@@ -300,7 +298,7 @@ async function initialize() {
 
 function setupEventListeners() {
     startButton.addEventListener('click', startGame);
-    userNameInput.addEventListener('input', validateUserName);
+    // userNameInput.addEventListener('input', validateUserName); // ★削除
     dashboardButton.addEventListener('click', showDashboard);
     closeDashboardButton.addEventListener('click', hideDashboard);
     hintButton.addEventListener('click', showHint);
@@ -325,7 +323,8 @@ function setupEventListeners() {
 }
 
 function validateUserName() {
-    startButton.disabled = !userNameInput.value.trim() || !gameData.settings;
+    // startButton.disabled = !userNameInput.value.trim() || !gameData.settings; // ★修正前
+    startButton.disabled = !gameData.settings; // ★修正後: gameDataがロードされたらボタンを有効化
 }
 
 // --- Screen Transitions ---
@@ -339,8 +338,8 @@ function showScreen(screenName) {
 
 // --- Game Logic ---
 function startGame() {
-    userName = userNameInput.value.trim();
-    localStorage.setItem('jobsim_userName', userName);
+    // userName = userNameInput.value.trim(); // ★削除 (グローバル変数でセット済み)
+    // localStorage.setItem('jobsim_userName', userName); // ★削除 (localStorageへの保存も不要)
     showScreen('game');
     renderPhase(currentPhaseId);
 }
@@ -704,4 +703,3 @@ function renderRadarChart(canvasId, data) {
 </script>
 </body>
 </html>
-
