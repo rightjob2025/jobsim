@@ -130,7 +130,10 @@
 
   <main id="main">
     <!-- Hero -->
-    <section id="top" class="relative isolate">
+    
+<section id="top" class="hero-section">
+  <div class="hero-inner">
+    
       <div class="absolute inset-0 -z-10 bg-[url('https://imgur.com/bnv6v7X.jpg')] bg-cover bg-center" aria-hidden="true"></div>
       <div class="absolute inset-0 -z-10 bg-gray-900/70"></div>
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 text-center text-white">
@@ -149,7 +152,63 @@
           </a>
         </div>
       </div>
-    </section>
+    
+  </div>
+</section>
+<style>
+/* Hero as background image (uses hero-bg.png in the same folder) */
+.hero-section {
+  width: 100%;
+  padding: 80px 0 120px;
+  background-image: url('./hero-bg.png');
+  background-size: cover;
+  background-position: center right;
+  background-repeat: no-repeat;
+  border-radius: 20px;
+  margin: 40px auto;
+}
+.hero-inner {
+  max-width: 1100px;
+  margin-left: 5%;
+  padding: 20px 0;
+}
+@media (max-width: 768px) {
+  .hero-section {
+    background-position: center top;
+    padding: 60px 20px 80px;
+  }
+  .hero-inner { margin-left: 0; }
+}
+</style>
+<style>
+
+/* === Hero Text Visibility Upgrade (global) === */
+.hero-section h1, .hero-section .hero-title {
+  color: #ffffff;
+  font-weight: 800;
+  text-shadow:
+      0px 3px 6px rgba(0,0,0,0.35),
+      0px 1px 3px rgba(0,0,0,0.40),
+      0px 0px 2px rgba(0,0,0,0.70);
+  -webkit-text-stroke: 0.5px rgba(0,0,0,0.25);
+  letter-spacing: 0.02em;
+}
+
+.hero-section p, .hero-section .hero-subtitle {
+  color: #F2F6FF;
+  font-weight: 500;
+  text-shadow:
+      0px 2px 4px rgba(0,0,0,0.25),
+      0px 1px 2px rgba(0,0,0,0.20);
+  -webkit-text-stroke: 0.3px rgba(0,0,0,0.15);
+  line-height: 1.8;
+}
+
+.hero-section .hero-buttons { position: relative; z-index: 10; }
+
+</style>
+
+
 
     <!-- Problems & Outcomes -->
     <section id="benefits" class="py-16 md:py-24 bg-white">
@@ -272,7 +331,107 @@
       </div>
     </section>
 
-    <!-- Testimonials (導入企業・求職者の声) -->
+    
+    <!-- Global Results: Overseas cases & ROI simulation (SVG charts) -->
+    <section id="global-results" class="py-16 md:py-24 bg-blue-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">海外事例と効果試算</h2>
+          <p class="mt-3 text-lg text-gray-700">グローバルで実証された効果と、Rightjobによる試算例をご紹介します。</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+            <h3 class="text-2xl font-bold text-brand-800 mb-4">海外実績（Forage 等）</h3>
+            <figure class="mt-2">
+              <div class="bg-white rounded-lg border border-gray-200 p-4">
+                <svg viewBox="0 0 560 330" role="img" aria-labelledby="chart1Title chart1Desc" class="w-full h-auto">
+                  <title id="chart1Title">シミュレーション完了者の採用成功率（相対指数）</title>
+                  <desc id="chart1Desc">面接獲得率と内定獲得率を通常応募者=100として比較した棒グラフ。</desc>
+                  <g font-size="12" fill="#374151" font-weight="600">
+                    <rect x="150" y="10" width="14" height="14" fill="#A7B3FF"></rect>
+                    <text x="170" y="22">通常応募者=100</text>
+                    <rect x="300" y="10" width="14" height="14" fill="#1F3AFF"></rect>
+                    <text x="320" y="22">シミュレーション完了者</text>
+                  </g>
+                  <line x1="60" y1="40" x2="60" y2="290" stroke="#9CA3AF" stroke-width="1"/>
+                  <line x1="60" y1="290" x2="520" y2="290" stroke="#9CA3AF" stroke-width="1"/>
+                  <g stroke="#E5E7EB" stroke-width="1">
+                    <line x1="60" y1="240" x2="520" y2="240"/>
+                    <line x1="60" y1="190" x2="520" y2="190"/>
+                    <line x1="60" y1="140" x2="520" y2="140"/>
+                    <line x1="60" y1="90"  x2="520" y2="90"/>
+                    <line x1="60" y1="40"  x2="520" y2="40"/>
+                  </g>
+                  <rect x="150" y="190" width="40" height="100" fill="#A7B3FF"></rect>
+                  <rect x="200" y="90"  width="40" height="200" fill="#1F3AFF"></rect>
+                  <rect x="330" y="190" width="40" height="100" fill="#A7B3FF"></rect>
+                  <rect x="380" y="40"  width="40" height="250" fill="#1F3AFF"></rect>
+                  <g fill="#111827" font-size="14" font-weight="600">
+                    <text x="150" y="315">面接獲得率</text>
+                    <text x="330" y="315">内定獲得率</text>
+                  </g>
+                  <g fill="#374151" font-size="13">
+                    <text x="160" y="185">100</text>
+                    <text x="210" y="85">200</text>
+                    <text x="340" y="185">100</text>
+                    <text x="395" y="35">300</text>
+                  </g>
+                </svg>
+              </div>
+              <figcaption class="mt-2 text-sm text-gray-500">海外実績②：完了者は面接獲得率2倍・内定獲得率3倍（相対指数）。</figcaption>
+            </figure>
+          </div>
+
+          <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+            <h3 class="text-2xl font-bold text-brand-800 mb-4">効果試算（例示）</h3>
+            <figure class="mt-2">
+              <div class="bg-white rounded-lg border border-gray-200 p-4">
+                <svg viewBox="0 0 560 330" role="img" aria-labelledby="chart2Title chart2Desc" class="w-full h-auto">
+                  <title id="chart2Title">導入前後の相対指数（100=導入前）</title>
+                  <desc id="chart2Desc">採用単価、内定辞退率、早期離職率、面接工数の導入前100に対する導入後の相対値。</desc>
+                  <line x1="60" y1="40" x2="60" y2="290" stroke="#9CA3AF" stroke-width="1"/>
+                  <line x1="60" y1="290" x2="520" y2="290" stroke="#9CA3AF" stroke-width="1"/>
+                  <g stroke="#E5E7EB" stroke-width="1">
+                    <line x1="60" y1="240" x2="520" y2="240"/>
+                    <line x1="60" y1="190" x2="520" y2="190"/>
+                    <line x1="60" y1="140" x2="520" y2="140"/>
+                    <line x1="60" y1="90"  x2="520" y2="90"/>
+                    <line x1="60" y1="40"  x2="520" y2="40"/>
+                  </g>
+                  <rect x="80"  y="190" width="28" height="100" fill="#FCA5A5"></rect>
+                  <rect x="112" y="220" width="28" height="70"  fill="#34D399"></rect>
+                  <rect x="200" y="190" width="28" height="100" fill="#FCA5A5"></rect>
+                  <rect x="232" y="230" width="28" height="60"  fill="#34D399"></rect>
+                  <rect x="320" y="190" width="28" height="100" fill="#FCA5A5"></rect>
+                  <rect x="352" y="245" width="28" height="45"  fill="#34D399"></rect>
+                  <rect x="440" y="190" width="28" height="100" fill="#FCA5A5"></rect>
+                  <rect x="472" y="220" width="28" height="70"  fill="#34D399"></rect>
+                  <g fill="#111827" font-size="14" font-weight="600">
+                    <text x="72"  y="315">採用単価</text>
+                    <text x="192" y="315">内定辞退率</text>
+                    <text x="312" y="315">早期離職率</text>
+                    <text x="432" y="315">面接工数</text>
+                  </g>
+                  <g fill="#374151" font-size="12">
+                    <text x="80"  y="184">100</text><text x="112" y="214">70</text>
+                    <text x="200" y="184">100</text><text x="232" y="224">60</text>
+                    <text x="320" y="184">100</text><text x="352" y="239">85</text>
+                    <text x="440" y="184">100</text><text x="472" y="214">70</text>
+                  </g>
+                  <rect x="380" y="15" width="14" height="14" fill="#FCA5A5"></rect>
+                  <text x="400" y="27" font-size="12" fill="#374151">導入前=100</text>
+                  <rect x="380" y="35" width="14" height="14" fill="#34D399"></rect>
+                  <text x="400" y="47" font-size="12" fill="#374151">導入後（相対）</text>
+                </svg>
+              </div>
+              <figcaption class="mt-2 text-sm text-gray-500">導入前後の相対指数（例）。導入後：採用単価70、内定辞退率60、早期離職率85、面接工数70。</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+<!-- Testimonials (導入企業・求職者の声) -->
     <section id="testimonials" class="py-16 md:py-24 bg-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
