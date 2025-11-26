@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobSim for DX Consultants | 64.8%の採用ミスマッチをゼロへ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Noto Sans JP', sans-serif; }
+        .hero-bg {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('https://www.transparenttextures.com/patterns/cubes.png');
+            opacity: 0.1;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .feature-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-slate-800">
+
+    <header class="fixed w-full z-50 bg-white/90 backdrop-blur-sm border-b border-gray-100">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-cube text-blue-600 text-2xl"></i>
+                <span class="font-bold text-xl tracking-tight text-slate-900">JobSim <span class="text-xs font-normal text-slate-500 ml-1">for Enterprise</span></span>
+            </div>
+            <nav class="hidden md:flex gap-8 text-sm font-medium text-slate-600">
+                <a href="#problems" class="hover:text-blue-600 transition">採用課題</a>
+                <a href="#features" class="hover:text-blue-600 transition">JobSimの特徴</a>
+                <a href="#demo" class="hover:text-blue-600 transition">デモシナリオ</a>
+                </nav>
+            <a href="https://calendar.app.google/m3GUYkHfwfmo9YfS6" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-full text-sm font-bold transition shadow-lg shadow-blue-500/30">
+                無料相談・デモ予約
+            </a>
+        </div>
+    </header>
+
+    <section class="hero-bg min-h-screen flex items-center pt-20">
+        <div class="container mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
+            <div class="text-white space-y-8 animate-fade-in-up">
+                <h1 class="text-4xl lg:text-6xl font-extrabold leading-tight">
+                    <span class="block text-3xl lg:text-4xl font-semibold mb-2 text-slate-400">履歴書だけでは防げない</span>
+                    <span class="gradient-text">「64.8%のミスマッチ」</span><br>をゼロにする。
+                </h1>
+                <p class="text-lg text-slate-300 leading-relaxed max-w-xl">
+                    有効求人倍率11.6倍の激戦区で、やっと採用した人材が3ヶ月で離職していませんか？<br>
+                    JobSimは、DX/ITコンサル実務の「没入型シミュレーション」で、
+                    面接では見抜けない<span class="text-white font-bold border-b border-blue-400">「現場適応力」と「カルチャーフィット」</span>を入社前に可視化します。
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                    <a href="https://calendar.app.google/m3GUYkHfwfmo9YfS6" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-lg font-bold text-center transition shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2">
+                        デモを申し込む <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+                
+                <div class="border-t border-slate-700/50 mt-8 pt-6">
+                    <div class="grid grid-cols-3 gap-4 pb-4">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-white">11.6<span class="text-sm text-slate-400">倍</span></div>
+                            <div class="text-xs text-slate-400">IT転職求人倍率</div>
+                        </div>
+                        <div class="text-center border-l border-slate-700/50">
+                            <div class="text-2xl font-bold text-red-400">64.8<span class="text-sm text-red-400/70">%</span></div>
+                            <div class="text-xs text-slate-400">採用後ギャップ実感</div>
+                        </div>
+                        <div class="text-center border-l border-slate-700/50">
+                            <div class="text-2xl font-bold text-white">30<span class="text-sm text-slate-400">%</span></div>
+                            <div class="text-xs text-slate-400">3ヶ月以内早期離職</div>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-slate-500 text-right pr-2">
+                        出典：Tech総研(2024/12)、レバテック株式会社(2025/4)
+                    </p>
+                </div>
+            </div>
+            
+            <div class="relative hidden lg:block">
+                <div class="bg-white rounded-xl shadow-2xl p-6 border border-slate-200 relative z-10 transform rotate-[-2deg] hover:rotate-0 transition duration-500">
+                    <div class="flex items-center justify-between mb-6 border-b border-gray-100 pb-4">
+                        <div class="flex gap-2">
+                            <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                        </div>
+                        <div class="text-xs font-bold text-slate-400">Candidate Potential Analysis</div>
+                    </div>
+                    <div class="flex gap-6">
+                        <div class="w-1/3 space-y-4">
+                            <div class="bg-blue-50 p-4 rounded-lg text-center">
+                                <div class="text-3xl font-bold text-blue-600">S</div>
+                                <div class="text-xs text-blue-800 font-bold">コンサル適性ランク</div>
+                            </div>
+                            <div class="space-y-3">
+                                <div>
+                                    <div class="text-xs text-slate-500 flex justify-between mb-1"><span>曖昧耐性</span> <span class="font-bold text-slate-800">9.2</span></div>
+                                    <div class="w-full bg-gray-100 rounded-full h-1.5">
+                                        <div class="bg-blue-600 h-1.5 rounded-full" style="width: 92%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-slate-500 flex justify-between mb-1"><span>クライアント対応</span> <span class="font-bold text-slate-800">8.5</span></div>
+                                    <div class="w-full bg-gray-100 rounded-full h-1.5">
+                                        <div class="bg-green-500 h-1.5 rounded-full" style="width: 85%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-2/3 bg-slate-50 rounded-lg p-4 border border-dashed border-slate-300">
+                            <div class="text-xs font-bold text-slate-500 mb-2">AIフィードバック：論理と共感のバランス</div>
+                            <p class="text-xs text-slate-700 leading-relaxed">
+                                <span class="bg-yellow-100 text-yellow-800 px-1 rounded">Excellent</span><br>
+                                現場からの強い抵抗に対し、「業務削減」という相手メリットを提示して感情的な反発を抑制できています。正論だけでなく、相手の立場に立った合意形成プロセスが踏める人材です。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="absolute -top-10 -right-10 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl -z-10"></div>
+                <div class="absolute -bottom-10 -left-10 w-64 h-64 bg-teal-500/20 rounded-full blur-3xl -z-10"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="problems" class="py-24 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">なぜ、ITコンサルの採用は失敗するのか？</h2>
+                <p class="text-slate-600">最新の調査で明らかになった、企業を苦しめる3つの「ギャップ」</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-10">
+                <div class="feature-card bg-gray-50 p-8 rounded-2xl border border-gray-100 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-red-100 text-red-600 text-xs font-bold px-3 py-1 rounded-bl-lg">57.1%が課題</div>
+                    <div class="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mb-6 text-red-600 text-2xl">
+                        <i class="fa-solid fa-file-contract"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">スキルの見極め困難</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        「DX経験あり」の履歴書を信じて採用したものの、実際はツール導入支援のみ。上流工程で求められる課題解決力や要件定義力が不足しているケースが57.1%に上ります。
+                    </p>
+                </div>
+                <div class="feature-card bg-gray-50 p-8 rounded-2xl border border-gray-100 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-yellow-100 text-yellow-600 text-xs font-bold px-3 py-1 rounded-bl-lg">評価のバラつき</div>
+                    <div class="w-14 h-14 bg-yellow-100 rounded-full flex items-center justify-center mb-6 text-yellow-600 text-2xl">
+                        <i class="fa-solid fa-user-tie"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">面接官の主観とバイアス</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        多忙な現場コンサルタントが面接を行うため、評価基準が属人化。技術力や「コンサル適性」の評価が面接官によってブレてしまい、優秀な人材を取り逃がしています。
+                    </p>
+                </div>
+                <div class="feature-card bg-gray-50 p-8 rounded-2xl border border-gray-100 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-blue-100 text-blue-600 text-xs font-bold px-3 py-1 rounded-bl-lg">3ヶ月で30%離職</div>
+                    <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mb-6 text-blue-600 text-2xl">
+                        <i class="fa-solid fa-door-open"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">リアリティ・ショック</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        「思っていた業務と違う」「自社カルチャーに合わない」。入社前の業務説明と実態の乖離により、採用者の約3人に1人が入社3ヶ月以内で早期離職しています。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="py-24 bg-slate-900 text-white relative overflow-hidden">
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center mb-16">
+                <span class="text-blue-400 font-bold tracking-wider text-sm uppercase">The Solution</span>
+                <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-6">構造化された「疑似体験」で<br>ミスマッチを未然に防ぐ</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto">
+                    JobSimは、従来の面接では見抜けない「コンピテンシー」を、<br>
+                    実際のプロジェクト現場を再現したワークサンプルテストで可視化します。
+                </p>
+            </div>
+
+            <div class="space-y-24">
+                <div class="flex flex-col md:flex-row items-center gap-12">
+                    <div class="md:w-1/2 order-2 md:order-1">
+                        <div class="bg-slate-800 rounded-xl p-2 shadow-2xl border border-slate-700">
+                             <div class="bg-slate-900 rounded-lg p-6">
+                                 <div class="flex gap-4 mb-4">
+                                     <div class="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center text-white font-bold text-xs">現場</div>
+                                     <div class="bg-white text-slate-800 p-3 rounded-r-xl rounded-bl-xl text-sm shadow-md max-w-xs">
+                                         本部の方針は分かりますが、今のシフト人数で新システムなんて無理です。現場を回せなくなりますよ！
+                                     </div>
+                                 </div>
+                                 <div class="border-t border-slate-700 pt-4 mt-4">
+                                     <p class="text-blue-400 text-xs font-bold mb-2">コンサルタントとしての回答（記述式）</p>
+                                     <div class="bg-slate-800 p-3 rounded border border-slate-600 text-slate-300 text-sm h-24">
+                                         ご懸念はもっともです。今回の導入目的は、まさにその「シフト調整の手間」を半減させることにあるのですが、まずは現状のオペレーションを阻害しない形での...
+                                     </div>
+                                 </div>
+                             </div>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 order-1 md:order-2">
+                        <h3 class="text-2xl font-bold mb-4 text-blue-400">01. 「板挟み」への対処力を測る</h3>
+                        <p class="text-slate-300 leading-relaxed mb-6">
+                            ITコンサルタントに不可欠なのは、技術知識以上に「対立する利害関係者の調整力」です。<br>
+                            JobSimでは、経営層からの圧力と現場からの抵抗という典型的なジレンマ状況を再現。
+                            正解のない状況下での「曖昧耐性」と「合意形成プロセス」を評価します。
+                        </p>
+                        <ul class="space-y-2 text-sm text-slate-400">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-green-500"></i> トレードオフのある意思決定</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-green-500"></i> 抵抗勢力への「納得感」ある切り返し</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-center gap-12">
+                    <div class="md:w-1/2">
+                        <h3 class="text-2xl font-bold mb-4 text-purple-400">02. AIによる「客観的・統一的」評価</h3>
+                        <p class="text-slate-300 leading-relaxed mb-6">
+                            面接官のスキルに依存しない、公平な選考を実現します。<br>
+                            候補者の回答テキストを、貴社のハイパフォーマー基準（ルーブリック）に基づき生成AIが即時採点。<br>
+                            「論理的だが攻撃的」「正論だが共感がない」といった定性的な傾向も数値化し、採用基準を標準化します。
+                        </p>
+                    </div>
+                    <div class="md:w-1/2">
+                        <div class="bg-slate-800 rounded-xl p-6 border border-slate-700 shadow-2xl relative">
+                             <div class="absolute -top-4 -right-4 bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">AI Analysis</div>
+                             <div class="space-y-4">
+                                 <div>
+                                     <div class="flex justify-between text-sm text-slate-300 mb-1">
+                                         <span>対人影響力 (Influence)</span>
+                                         <span class="text-purple-400 font-bold">8/10</span>
+                                     </div>
+                                     <div class="w-full bg-slate-700 rounded-full h-2">
+                                         <div class="bg-purple-500 h-2 rounded-full" style="width: 80%"></div>
+                                     </div>
+                                 </div>
+                                 <div class="bg-slate-900/50 p-3 rounded text-xs text-slate-400 border-l-2 border-purple-500">
+                                     <span class="text-white font-bold block mb-1">AI評価コメント:</span>
+                                     相手の感情に配慮しつつ（Win-Winの提示）、ビジネスゴール（システム導入）を妥協しない姿勢が評価できます。貴社の採用要件である「Professionalism」と合致しています。
+                                 </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+            <div class="absolute top-1/4 -left-20 w-96 h-96 bg-blue-900/30 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-1/4 -right-20 w-96 h-96 bg-purple-900/30 rounded-full blur-3xl"></div>
+        </div>
+    </section>
+
+    <section class="py-24 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">選考スピードを落とさず、質を高める</h2>
+                <p class="text-slate-600">「長い選考」は候補者離脱の主因です。JobSimは自宅で20分から30分で完了します。</p>
+            </div>
+            
+            <div class="flex flex-col md:flex-row justify-center items-center gap-4 max-w-4xl mx-auto">
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex-1 text-center opacity-50">
+                    <div class="text-sm font-bold text-slate-400 mb-2">STEP 1</div>
+                    <div class="font-bold text-slate-800">書類選考</div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-slate-300 hidden md:block"></i>
+                <div class="bg-white p-6 rounded-xl shadow-lg border-2 border-blue-500 flex-1 text-center transform scale-110 relative z-10">
+                    <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full">Webで完結</div>
+                    <div class="text-sm font-bold text-blue-600 mb-2">STEP 2</div>
+                    <div class="font-bold text-slate-900 text-lg mb-2">JobSim実施</div>
+                    <p class="text-xs text-slate-500">
+                        24時間いつでも受検可能<br>
+                        スクリーニング精度向上
+                    </p>
+                </div>
+                <i class="fa-solid fa-chevron-right text-slate-300 hidden md:block"></i>
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex-1 text-center">
+                    <div class="text-sm font-bold text-slate-400 mb-2">STEP 3</div>
+                    <div class="font-bold text-slate-800">構造化面接</div>
+                    <p class="text-xs text-slate-500 mt-2">
+                        レポート結果を元に<br>ミスマッチ重点確認
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="demo" class="py-24 bg-white border-t border-gray-100">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col lg:flex-row gap-16 items-center">
+                <div class="lg:w-1/2">
+                    <h2 class="text-3xl font-bold text-slate-900 mb-6">提供シナリオ例：<br>「DXプロジェクト救出作戦」</h2>
+                    <p class="text-slate-600 leading-relaxed mb-6">
+                        候補者は小売チェーンのDX担当コンサルタントとしてアサインされます。<br>
+                        現場の「変化への抵抗」や「システムトラブル」等のインシデントに対し、
+                        PMとしてどう振る舞うか？ 実際の業務に近いストレス環境での行動特性を測定します。
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 rounded bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0 mt-1"><i class="fa-solid fa-magnifying-glass text-xs"></i></div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm">現状分析・課題特定</h4>
+                                <p class="text-xs text-slate-500">クライアントの曖昧な要望から、真のビジネス課題（Why）を特定できる論理的思考力。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 rounded bg-red-100 text-red-600 flex items-center justify-center flex-shrink-0 mt-1"><i class="fa-solid fa-fire text-xs"></i></div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm">コンフリクト・マネジメント</h4>
+                                <p class="text-xs text-slate-500">「正論」だけでは動かない抵抗勢力に対し、相手のメンツを立てつつ協力を取り付ける人間力。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 rounded bg-purple-100 text-purple-600 flex items-center justify-center flex-shrink-0 mt-1"><i class="fa-solid fa-lightbulb text-xs"></i></div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm">バリュー発揮・提案</h4>
+                                <p class="text-xs text-slate-500">単なる御用聞きではなく、プロフェッショナルとして「耳の痛いこと」も含めた提案ができるか。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:w-1/2">
+                    <div class="bg-gray-900 rounded-xl overflow-hidden shadow-2xl border border-gray-700">
+                        <div class="bg-gray-800 px-4 py-2 flex gap-2 border-b border-gray-700">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        </div>
+                        <div class="relative h-64 bg-slate-900">
+                            <img src="https://imgur.com/LFl2t13.gif" alt="Demo Animation" class="w-full h-full object-cover opacity-60">
+                            
+                            <div class="absolute inset-0 flex flex-col items-center justify-center text-center z-10">
+                                <p class="text-slate-300 font-bold mb-4 text-lg drop-shadow-md">Interactive Scenario Demo</p>
+                                <button onclick="window.open('https://calendar.app.google/m3GUYkHfwfmo9YfS6', '_blank')" class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-500 transition text-sm font-bold shadow-lg">
+                                    デモを申し込む
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-24 bg-blue-900 text-white text-center">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">コンサルタント採用の<br>「質」を変えませんか？</h2>
+            <p class="text-blue-200 mb-10 text-lg">
+                80万人のIT人材不足時代。<br>
+                「選ばれる企業」になるために、候補者体験（CX）の高い選考プロセスを導入しましょう。
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="https://calendar.app.google/m3GUYkHfwfmo9YfS6" target="_blank" class="bg-white text-blue-900 px-8 py-4 rounded-lg font-bold hover:bg-blue-50 transition shadow-lg w-full sm:w-auto">
+                    デモを申し込む（無料）
+                </a>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSe9R9-1CFfPcgsM4XhKZkeCVLWt7gfxYxk8KFdMLyBDVZsvHw/viewform?usp=dialog" target="_blank" class="bg-transparent border border-white text-white px-8 py-4 rounded-lg font-bold hover:bg-white/10 transition w-full sm:w-auto">
+                    資料をダウンロード
+                </a>
+            </div>
+            
+            <div class="mt-16 pt-8 border-t border-blue-800/50 flex flex-col md:flex-row justify-center items-center gap-6 text-xs text-blue-400">
+                <a href="https://rightjob.info/one-record-company/" target="_blank" class="hover:text-white transition">運営会社</a>
+                <span class="hidden md:inline">|</span>
+                <a href="https://drive.google.com/file/d/1fyB0vvtnjB4ed6dG0zaIffjrb39Nedi-/view" target="_blank" class="hover:text-white transition">利用規約</a>
+            </div>
+            <p class="mt-4 text-xs text-blue-500">
+                © 2025 JobSim. All rights reserved.
+            </p>
+        </div>
+    </section>
+
+</body>
+</html>
