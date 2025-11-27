@@ -33,10 +33,17 @@
             transform: translateY(-5px);
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
         }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-slate-800">
-
+    <!-- Header -->
     <header class="fixed w-full z-50 bg-white/90 backdrop-blur-sm border-b border-gray-100">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-2">
@@ -47,27 +54,30 @@
                 <a href="#problems" class="hover:text-blue-600 transition">採用課題</a>
                 <a href="#features" class="hover:text-blue-600 transition">JobSimの特徴</a>
                 <a href="#demo" class="hover:text-blue-600 transition">デモシナリオ</a>
-                </nav>
-            <a href="https://calendar.app.google/m3GUYkHfwfmo9YfS6" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-full text-sm font-bold transition shadow-lg shadow-blue-500/30">
+            </nav>
+            <!-- Header Button Updated -->
+            <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2b7cWlxzaAvWUdQiAx4CqokETd3nPk4R9tZIvsHzR_rFDnBe2e9FMVnYnt32ixfJSruDg1-RFo" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-full text-sm font-bold transition shadow-lg shadow-blue-500/30">
                 無料相談・デモ予約
             </a>
         </div>
     </header>
 
+    <!-- Hero Section -->
     <section class="hero-bg min-h-screen flex items-center pt-20">
         <div class="container mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
             <div class="text-white space-y-8 animate-fade-in-up">
                 <h1 class="text-4xl lg:text-6xl font-extrabold leading-tight">
-                    <span class="block text-3xl lg:text-4xl font-semibold mb-2 text-slate-400">履歴書だけでは防げない</span>
+                    <span class="block text-3xl lg:text-4xl font-semibold mb-2 text-slate-400">面接だけでは見抜けない</span>
                     <span class="gradient-text">「64.8%のミスマッチ」</span><br>をゼロにする。
                 </h1>
                 <p class="text-lg text-slate-300 leading-relaxed max-w-xl">
-                    有効求人倍率11.6倍の激戦区で、やっと採用した人材が3ヶ月で離職していませんか？<br>
+                    有効求人倍率11.6倍の激戦を経て、やっと採用した人材が3ヶ月で離職していませんか？<br>
                     JobSimは、DX/ITコンサル実務の「没入型シミュレーション」で、
                     面接では見抜けない<span class="text-white font-bold border-b border-blue-400">「現場適応力」と「カルチャーフィット」</span>を入社前に可視化します。
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 pt-4">
-                    <a href="https://calendar.app.google/m3GUYkHfwfmo9YfS6" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-lg font-bold text-center transition shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2">
+                    <!-- Hero CTA Button Updated -->
+                    <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2b7cWlxzaAvWUdQiAx4CqokETd3nPk4R9tZIvsHzR_rFDnBe2e9FMVnYnt32ixfJSruDg1-RFo" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-lg font-bold text-center transition shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2">
                         デモを申し込む <i class="fa-solid fa-arrow-right"></i>
                     </a>
                 </div>
@@ -139,6 +149,7 @@
         </div>
     </section>
 
+    <!-- Problems Section -->
     <section id="problems" class="py-24 bg-white">
         <div class="container mx-auto px-6">
             <div class="text-center mb-16">
@@ -180,6 +191,7 @@
         </div>
     </section>
 
+    <!-- Features Section -->
     <section id="features" class="py-24 bg-slate-900 text-white relative overflow-hidden">
         <div class="container mx-auto px-6 relative z-10">
             <div class="text-center mb-16">
@@ -230,7 +242,7 @@
                         <h3 class="text-2xl font-bold mb-4 text-purple-400">02. AIによる「客観的・統一的」評価</h3>
                         <p class="text-slate-300 leading-relaxed mb-6">
                             面接官のスキルに依存しない、公平な選考を実現します。<br>
-                            候補者の回答テキストを、貴社のハイパフォーマー基準（ルーブリック）に基づき生成AIが即時採点。<br>
+                            候補者の回答テキストを、貴社の採用基準に基づき生成AIが即時採点。<br>
                             「論理的だが攻撃的」「正論だが共感がない」といった定性的な傾向も数値化し、採用基準を標準化します。
                         </p>
                     </div>
@@ -263,6 +275,7 @@
         </div>
     </section>
 
+    <!-- Steps Section -->
     <section class="py-24 bg-gray-50">
         <div class="container mx-auto px-6">
             <div class="text-center mb-16">
@@ -297,6 +310,7 @@
         </div>
     </section>
 
+    <!-- Demo Scenario Section -->
     <section id="demo" class="py-24 bg-white border-t border-gray-100">
         <div class="container mx-auto px-6">
             <div class="flex flex-col lg:flex-row gap-16 items-center">
@@ -343,7 +357,8 @@
                             
                             <div class="absolute inset-0 flex flex-col items-center justify-center text-center z-10">
                                 <p class="text-slate-300 font-bold mb-4 text-lg drop-shadow-md">Interactive Scenario Demo</p>
-                                <button onclick="window.open('https://calendar.app.google/m3GUYkHfwfmo9YfS6', '_blank')" class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-500 transition text-sm font-bold shadow-lg">
+                                <!-- Interactive Demo Button Updated -->
+                                <button onclick="window.open('https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2b7cWlxzaAvWUdQiAx4CqokETd3nPk4R9tZIvsHzR_rFDnBe2e9FMVnYnt32ixfJSruDg1-RFo', '_blank')" class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-500 transition text-sm font-bold shadow-lg">
                                     デモを申し込む
                                 </button>
                             </div>
@@ -354,6 +369,7 @@
         </div>
     </section>
 
+    <!-- Contact Section -->
     <section id="contact" class="py-24 bg-blue-900 text-white text-center">
         <div class="container mx-auto px-6">
             <h2 class="text-3xl md:text-4xl font-bold mb-6">コンサルタント採用の<br>「質」を変えませんか？</h2>
@@ -362,7 +378,8 @@
                 「選ばれる企業」になるために、候補者体験（CX）の高い選考プロセスを導入しましょう。
             </p>
             <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="https://calendar.app.google/m3GUYkHfwfmo9YfS6" target="_blank" class="bg-white text-blue-900 px-8 py-4 rounded-lg font-bold hover:bg-blue-50 transition shadow-lg w-full sm:w-auto">
+                <!-- Footer CTA Button Updated -->
+                <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2b7cWlxzaAvWUdQiAx4CqokETd3nPk4R9tZIvsHzR_rFDnBe2e9FMVnYnt32ixfJSruDg1-RFo" target="_blank" class="bg-white text-blue-900 px-8 py-4 rounded-lg font-bold hover:bg-blue-50 transition shadow-lg w-full sm:w-auto">
                     デモを申し込む（無料）
                 </a>
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLSe9R9-1CFfPcgsM4XhKZkeCVLWt7gfxYxk8KFdMLyBDVZsvHw/viewform?usp=dialog" target="_blank" class="bg-transparent border border-white text-white px-8 py-4 rounded-lg font-bold hover:bg-white/10 transition w-full sm:w-auto">
@@ -376,10 +393,9 @@
                 <a href="https://drive.google.com/file/d/1fyB0vvtnjB4ed6dG0zaIffjrb39Nedi-/view" target="_blank" class="hover:text-white transition">利用規約</a>
             </div>
             <p class="mt-4 text-xs text-blue-500">
-                © 2025 JobSim. All rights reserved.
+                © 2025 Rightjob Inc. All rights reserved.
             </p>
         </div>
     </section>
-
 </body>
 </html>
