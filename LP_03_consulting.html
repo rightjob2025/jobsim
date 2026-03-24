@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>RightJob for コンサル・専門職採用｜6軸スコアリングで実務判断力を可視化</title>
+<meta name="description" content="面接・SPIでは見えない実務判断力を6軸スコアリングで可視化。コンサル・専門職の選考精度を高める体験型採用。初期費用0円・最短2週間で導入開始。"/>
+<meta property="og:title" content="RightJob for コンサル・専門職採用｜6軸スコアリングで実務判断力を可視化"/>
+<meta property="og:description" content="面接・SPIでは見えない実務判断力を6軸スコアリングで可視化。コンサル・専門職の選考精度を高める体験型採用。初期費用0円・最短2週間で導入開始。"/>
+<meta property="og:type" content="website"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{fontFamily:{sans:['Noto Sans JP','sans-serif']},colors:{brand:'#0B3D91',action:'#1A73E8',cta:'#D45500',ok:'#1B7F4F',ink:'#1A1A2E'}}}}</script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;}
+body{font-family:'Noto Sans JP',sans-serif;}
+html{scroll-behavior:smooth;}
+.fade-in{animation:fadeIn .5s ease both;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.card-hover{transition:transform .2s,box-shadow .2s;}
+.card-hover:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(11,61,145,.10);}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;animation:fadeIn .2s ease;}
+.sticky-cta-pc{position:fixed;right:20px;bottom:80px;z-index:100;}
+@media(max-width:768px){.sticky-cta-pc{display:none!important;}}
+input[type=range]{accent-color:#1A73E8;}
+</style>
+</head>
+<body class="bg-white">
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect} = React;
+const BRAND='#0B3D91',ACTION='#1A73E8',CTA_C='#D45500',OK='#1B7F4F',INK='#1A1A2E',BG='#F8FAFF';
+
+const Ico={
+  check:"M20 6L9 17l-5-5",arrow:"M5 12h14M12 5l7 7-7 7",chevR:"M9 18l6-6-6-6",
+  play:"M5 3l14 9-14 9V3z",build:"M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
+  bar:"M18 20V10M12 20V4M6 20v-6",x:"M18 6L6 18M6 6l12 12",
+  down:"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3",
+  phone:"M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.6a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 3h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 10.6a16 16 0 0 0 6 6l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 17.92z",
+  shield:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
+  light:"M9 18h6M10 22h4M12 2a7 7 0 0 1 7 7c0 2.5-1.3 4.7-3.3 6H8.3A7.4 7.4 0 0 1 5 9a7 7 0 0 1 7-7z",
+  user:"M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8z",
+  star:"M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z",
+  zap:"M13 2L3 14h9l-1 8 10-12h-9l1-8z",
+};
+const I=(({d,size=20,color='currentColor',sw=2})=>(
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">
+    <path d={d}/>
+  </svg>
+));
+const scrollTo=id=>{const e=document.getElementById(id);if(e)e.scrollIntoView({behavior:'smooth',block:'start'});};
+
+/* ── GOOGLE FORM ── */
+const GF_URL='https://docs.google.com/forms/d/e/1FAIpQLSe9R9-1CFfPcgsM4XhKZkeCVLWt7gfxYxk8KFdMLyBDVZsvHw/formResponse';
+const GF={company:'entry.1732419578',name:'entry.241348232',dept:'entry.1364847202',position:'entry.304135200',email:'entry.1145104145',size:'entry.106610522',status:'entry.147330966',issues:'entry.462365273',privacy:'entry.2106067764'};
+
+/* ── MODAL ── */
+const Modal=(({onClose})=>{
+  const [f,setF]=useState({company:'',name:'',dept:'',position:'',email:'',size:'',status:'',issues:'',privacy:false});
+  const [sent,setSent]=useState(false);const [busy,setBusy]=useState(false);
+  const set=(k,v)=>setF(p=>(({...p,[k]:v})));
+  const submit=async e=>{
+    e.preventDefault();setBusy(true);
+    try{const b=new URLSearchParams();
+      ['company','name','dept','position','email','size','status','issues'].forEach(k=>b.append(GF[k],f[k]));
+      b.append(GF.privacy,'同意する');
+      await fetch(GF_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:b.toString()});
+    }catch(_){}
+    setBusy(false);setSent(true);
+  };
+  const inp="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400 transition-colors";
+  return(
+    <div className="modal-overlay" onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
+      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg relative" style={{maxHeight:'90vh',overflowY:'auto'}}>
+        <div className="p-8">
+          <button onClick={onClose} className="absolute top-5 right-5 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center">
+            <I d={Ico.x} size={14} color="#666"/>
+          </button>
+          {!sent?(
+            <>
+              <div className="mb-6">
+                <div className="inline-block px-3 py-1 text-xs font-bold rounded-full bg-blue-50 text-blue-700 mb-3">資料請求・無料デモ申込</div>
+                <h3 className="text-2xl font-black text-ink mb-2">まずは資料請求・無料デモを</h3>
+                <p className="text-sm text-gray-500">担当者より2営業日以内にご連絡します。</p>
+              </div>
+              <form onSubmit={submit} className="space-y-4">
+                <div className="grid grid-cols-2 gap-3">
+                  <div><label className="text-xs font-bold text-gray-500 block mb-1">会社名 <span className="text-red-500">*</span></label>
+                    <input required value={f.company} onChange={e=>set('company',e.target.value)} placeholder="株式会社〇〇" className={inp}/></div>
+                  <div><label className="text-xs font-bold text-gray-500 block mb-1">お名前 <span className="text-red-500">*</span></label>
+                    <input required value={f.name} onChange={e=>set('name',e.target.value)} placeholder="山田 太郎" className={inp}/></div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div><label className="text-xs font-bold text-gray-500 block mb-1">所属部署</label>
+                    <input value={f.dept} onChange={e=>set('dept',e.target.value)} placeholder="人事部" className={inp}/></div>
+                  <div><label className="text-xs font-bold text-gray-500 block mb-1">役職</label>
+                    <input value={f.position} onChange={e=>set('position',e.target.value)} placeholder="課長" className={inp}/></div>
+                </div>
+                <div><label className="text-xs font-bold text-gray-500 block mb-1">メールアドレス <span className="text-red-500">*</span></label>
+                  <input required type="email" value={f.email} onChange={e=>set('email',e.target.value)} placeholder="taro@example.com" className={inp}/></div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div><label className="text-xs font-bold text-gray-500 block mb-1">従業員規模 <span className="text-red-500">*</span></label>
+                    <select required value={f.size} onChange={e=>set('size',e.target.value)} className={inp+' bg-white'}>
+                      <option value="">選択してください</option>
+                      {['1～50名','51～100名','101～300名','301～500名','501～1,000名','1,001名以上'].map(v=><option key={v}>{v}</option>)}
+                    </select></div>
+                  <div><label className="text-xs font-bold text-gray-500 block mb-1">検討状況 <span className="text-red-500">*</span></label>
+                    <select required value={f.status} onChange={e=>set('status',e.target.value)} className={inp+' bg-white'}>
+                      <option value="">選択してください</option>
+                      {['具体的に導入を検討','比較検討中','まずは情報収集','その他'].map(v=><option key={v}>{v}</option>)}
+                    </select></div>
+                </div>
+                <div><label className="text-xs font-bold text-gray-500 block mb-1">課題・ご要望</label>
+                  <textarea value={f.issues} onChange={e=>set('issues',e.target.value)} rows={3}
+                    placeholder="例：離職率が高い、採用後のミスマッチが多い…" className={inp+' resize-none'}/></div>
+                <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl">
+                  <input required type="checkbox" id="prv" checked={f.privacy} onChange={e=>set('privacy',e.target.checked)} className="mt-0.5 w-4 h-4 accent-blue-600 flex-shrink-0"/>
+                  <label htmlFor="prv" className="text-xs text-gray-500 leading-relaxed cursor-pointer">
+                    <span className="text-red-500 font-bold">*</span> 入力情報はプライバシーポリシーに従い管理します。資料送付・デモ日程調整の目的のみに使用します。
+                  </label>
+                </div>
+                <button type="submit" disabled={busy}
+                  className="w-full py-4 text-white font-black text-base rounded-2xl shadow-lg transition-all hover:opacity-90 hover:scale-105 disabled:opacity-60"
+                  style={{background:`linear-gradient(135deg,${BRAND},${ACTION})`}}>
+                  {busy?'送信中...':'無料デモを申し込む →'}
+                </button>
+              </form>
+            </>
+          ):(
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                <I d={Ico.check} size={32} color={OK} sw={2.5}/>
+              </div>
+              <h3 className="text-2xl font-black text-ink mb-3">お申し込みありがとうございます</h3>
+              <p className="text-gray-500 text-sm mb-8">担当者より2営業日以内にご登録メールアドレスへご連絡いたします。</p>
+              <button onClick={onClose} className="px-8 py-3 text-white font-bold rounded-xl" style={{background:BRAND}}>閉じる</button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+});
+
+/* ── HEADER ── */
+const Header=(({onDemo})=>(
+  <header className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="flex justify-between items-center h-16">
+        <div className="flex items-center gap-3">
+          <span className="text-2xl font-black italic tracking-tight cursor-pointer" style={{color:BRAND}} onClick={()=>scrollTo('hero')}>RightJob</span>
+          <span className="hidden sm:inline text-xs font-bold text-gray-400 border border-gray-200 rounded-full px-2 py-0.5">for 採用</span>
+        </div>
+        <nav className="hidden lg:flex gap-7 text-sm font-medium text-gray-600">
+          {[['課題と背景','problem'],['サービス概要','steps'],['料金プラン','pricing'],['よくある質問','faq']].map(([l,a])=>(
+            <button key={a} className="hover:text-blue-600 transition-colors" onClick={()=>scrollTo(a)}>{l}</button>
+          ))}
+        </nav>
+        <button onClick={onDemo} className="px-5 py-2.5 text-white text-sm font-bold rounded-xl transition-all hover:opacity-90 shadow" style={{backgroundColor:CTA_C}}>
+          無料デモを申し込む
+        </button>
+      </div>
+    </div>
+  </header>
+));
+
+/* ── HERO ── */
+const Hero=(({onDemo})=>(
+  <section id="hero" className="py-16 lg:py-24 bg-white fade-in">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
+        <div>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-6 bg-blue-50 text-blue-700">
+            <I d={Ico.check} size={13}/>コンサル・専門職採用向け｜6軸スコアリングで実務判断力を可視化
+          </div>
+          <h1 className="text-4xl sm:text-5xl lg:text-[3.25rem] font-black leading-tight mb-5 text-ink">
+            「使える人材」かどうかは、<br/>実務でしか確かめられない。
+          </h1>
+          <p className="text-lg text-gray-500 leading-relaxed mb-8 max-w-lg">面接・SPIでは見えない論理思考・提案力・顧客対応力を、ジョブシミュレーションで客観的にスコアリングします。</p>
+          <div className="flex flex-col sm:flex-row gap-3 mb-4">
+            <button onClick={onDemo}
+              className="px-8 py-4 text-white text-base font-bold rounded-xl shadow-lg transition-all hover:opacity-90 hover:scale-105 flex items-center justify-center gap-2"
+              style={{backgroundColor:CTA_C}}>
+              無料デモを申し込む <I d={Ico.arrow} size={17} color="#fff"/>
+            </button>
+            <button onClick={()=>scrollTo('steps')}
+              className="px-8 py-4 text-gray-700 bg-gray-50 border border-gray-200 text-base font-bold rounded-xl hover:bg-gray-100 flex items-center gap-2">
+              <I d={Ico.down} size={16}/>6軸スコアのサンプルを見る
+            </button>
+          </div>
+          <p className="text-xs text-gray-400">※ 担当者より2営業日以内にご連絡します。費用は一切かかりません。</p>
+          <div className="mt-10 inline-flex items-center gap-4 bg-white border border-gray-100 shadow-lg rounded-2xl px-5 py-3">
+            <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center">
+              <I d={Ico.shield} size={18} color={OK}/>
+            </div>
+            <div>
+              <div className="text-2xl font-black" style={{color:BRAND}}>約300万円</div>
+              <div className="text-xs text-gray-400 font-bold">早期離職1名あたりの損失（業界試算）</div>
+            </div>
+          </div>
+        </div>
+        <div className="mt-12 lg:mt-0">
+          <HeroVisual/>
+        </div>
+      </div>
+    </div>
+  </section>
+));
+
+/* ── HERO VISUAL ── */
+const HeroVisual=(()=>{
+  /* consulting: 6-axis score bars */
+  return(
+    <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100"><div className="text-sm font-bold text-gray-500 mb-5">6軸スコアリング ダッシュボード（イメージ）</div><div className="space-y-3 mb-6">{[{label:"傾聴力",score:82,color:"#0B3D91"},{label:"提案力",score:75,color:"#1A73E8"},{label:"実行力",score:88,color:"#1B7F4F"},{label:"協調性",score:79,color:"#D45500"},{label:"論理思考",score:91,color:"#0B3D91"},{label:"判断力",score:70,color:"#6B21A8"}].map(({label,score,color})=>(<div key={label}><div className="flex justify-between text-xs mb-1"><span className="font-bold text-gray-600">{label}</span><span className="font-black" style={{color}}>{score}</span></div><div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden"><div className="h-full rounded-full" style={{width:`${score}%`,background:color}}/></div></div>))}</div><div className="border-t border-dashed pt-4"><div className="text-xs text-gray-400 mb-1">AIが実務体験を分析し、スコアを即時生成</div><div className="text-sm font-bold text-green-700">✓ 面接前スクリーニングに組み込み可能</div></div></div>
+  );
+});
+
+/* ── TRUST BAR ── */
+const TrustBar=(()=>(
+  <section className="py-10 bg-white border-t border-b border-gray-100">
+    <div className="max-w-6xl mx-auto px-4">
+      <p className="text-center text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">先行導入パートナー企業 業種・規模</p>
+      <div className="flex flex-wrap justify-center items-stretch gap-4">
+        {[
+          {icon:Ico.light,color:'#0B3D91',title:'コンサルティング企業',sub:'コンサル職選考に活用'},
+          {icon:Ico.zap,  color:'#1A1A2E',title:'IT・SaaS企業',        sub:'守秘義務対応・採用広報に活用'},
+          {icon:Ico.build,color:'#1B7F4F',title:'スタートアップ',      sub:'少人数採用のカルチャーマッチに'},
+          {icon:Ico.user, color:'#D45500',title:'人材紹介・エージェント',sub:'推薦品質向上・差別化提案に'},
+        ].map((it,i)=>(
+          <div key={i} className="flex items-center gap-3 px-5 py-3.5 rounded-xl bg-gray-50 border border-gray-100 min-w-[190px]">
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{background:it.color}}>
+              <I d={it.icon} size={18} color="#fff" sw={1.5}/>
+            </div>
+            <div>
+              <div className="text-xs font-black text-gray-700">{it.title}</div>
+              <div className="text-xs text-gray-400 mt-0.5">{it.sub}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p className="text-center text-xs text-gray-400 mt-5">※ 先行導入パートナーのフィードバックをもとにサービスを継続改善しています。</p>
+    </div>
+  </section>
+));
+
+/* ── PROBLEM ── */
+const Problem=(()=>(
+  <section id="problem" className="py-20" style={{background:BG}}>
+    <div className="max-w-7xl mx-auto px-4">
+      <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
+        <div>
+          <div className="inline-block px-3 py-1 text-xs font-bold rounded-full bg-red-50 text-red-600 mb-4">コンサル・専門職採用の限界</div>
+          <h2 className="text-3xl font-black text-ink mb-5">面接だけでは、<br/>実務判断力は測れない。</h2>
+          <p className="text-gray-500 leading-relaxed mb-8">論理思考・提案力・顧客対応力——コンサルや専門職で求められる能力は、面接やSPIでは可視化できません。実務疑似体験で選考精度を高めます。</p>
+          <div className="space-y-3">
+
+              <div className="flex items-center gap-3 text-sm font-semibold text-gray-700">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1B7F4F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                6軸スコアリングで実務判断力を客観的に可視化
+              </div>
+              <div className="flex items-center gap-3 text-sm font-semibold text-gray-700">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1B7F4F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                ケーススタディ形式で選考フローに組み込み可能
+              </div>
+              <div className="flex items-center gap-3 text-sm font-semibold text-gray-700">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1B7F4F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                守秘義務のある業界でも社風・価値観を伝達可能
+              </div>
+              <div className="flex items-center gap-3 text-sm font-semibold text-gray-700">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1B7F4F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                面接前スクリーニングでミスマッチ候補者を事前排除
+              </div>
+          </div>
+        </div>
+        <div className="mt-12 lg:mt-0">
+          <div className="grid grid-cols-1 gap-4">
+
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 card-hover flex items-center gap-5">
+            <div className="text-4xl font-black flex-shrink-0 min-w-[90px]" style={{color:"#0B3D91"}}>{"6軸"}</div>
+            <div>
+              <div className="font-bold text-sm text-gray-700 mb-1">実務能力スコアリング</div>
+              <div className="text-xs text-gray-400 leading-relaxed">傾聴力・提案力・実行力・協調性・論理思考・判断力</div>
+            </div>
+          </div>
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 card-hover flex items-center gap-5">
+            <div className="text-4xl font-black flex-shrink-0 min-w-[90px]" style={{color:"#D45500"}}>{"24.5%"}</div>
+            <div>
+              <div className="font-bold text-sm text-gray-700 mb-1">入社後リアリティショック発生率</div>
+              <div className="text-xs text-gray-400 leading-relaxed">高度専門職ほどスキルギャップが顕在化（※業界統計）</div>
+            </div>
+          </div>
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 card-hover flex items-center gap-5">
+            <div className="text-4xl font-black flex-shrink-0 min-w-[90px]" style={{color:"#1A73E8"}}>{"約300万"}</div>
+            <div>
+              <div className="font-bold text-sm text-gray-700 mb-1">早期離職1名あたりの損失</div>
+              <div className="text-xs text-gray-400 leading-relaxed">高度人材の採用・育成コストはさらに高額（※業界試算）</div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+));
+
+/* ── STEPS ── */
+const Steps=((({onDemo})=>(
+  <section id="steps" className="py-20 bg-white">
+    <div className="max-w-6xl mx-auto px-4 text-center">
+      <h2 className="text-3xl font-black text-ink mb-3">最小工数で最大効果を生む、3ステップ</h2>
+      <p className="text-gray-500 mb-16">AI自動生成で現場負担ゼロ。候補者体験から採用データまで一貫管理。</p>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-10 relative">
+        {[
+          {step:'STEP 1',title:'ヒアリング・要件定義',desc:'採用要件・求める人物像をヒアリング。AIがコンテンツ設計を自動提案します。',icon:Ico.build},
+          {step:'STEP 2',title:'AI生成・レビュー',    desc:'最短5日でシミュレーションを自動生成。担当者は確認・微調整するだけ。',icon:Ico.play},
+          {step:'STEP 3',title:'公開・効果測定',       desc:'候補者へURLを配布。スコアデータをダッシュボードで即時確認できます。',icon:Ico.bar},
+        ].map((s,i)=>(
+          <div key={i} className="relative">
+            {i<2&&<div className="hidden md:block absolute top-10 left-[calc(50%+40px)] w-[calc(100%-80px)] h-0.5 bg-blue-100"/>}
+            <div className="w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center shadow-md"
+              style={{background:`linear-gradient(135deg,${BRAND},${ACTION})`}}>
+              <I d={s.icon} size={32} color="#fff" sw={1.5}/>
+            </div>
+            <div className="text-xs font-black text-blue-500 tracking-widest mb-2 uppercase">{s.step}</div>
+            <h3 className="text-xl font-black text-ink mb-3">{s.title}</h3>
+            <p className="text-sm text-gray-500 leading-relaxed max-w-xs mx-auto">{s.desc}</p>
+          </div>
+        ))}
+      </div>
+      <div className="mt-14 flex flex-col sm:flex-row justify-center gap-4">
+        <button onClick={onDemo} className="px-10 py-4 text-white font-bold rounded-2xl text-base shadow-lg transition-all hover:opacity-90 hover:scale-105" style={{backgroundColor:CTA_C}}>
+          無料デモを申し込む →
+        </button>
+        <button onClick={()=>scrollTo('pricing')} className="px-10 py-4 text-gray-700 bg-gray-50 border border-gray-200 font-bold rounded-2xl text-base hover:bg-gray-100 flex items-center justify-center gap-2">
+          <I d={Ico.down} size={16}/>料金プランを確認する
+        </button>
+      </div>
+    </div>
+  </section>
+)));
+
+/* ── SIM PREVIEW ── */
+const SimPreview=(()=>{
+  const STEPS=[
+    {
+      scene:"【状況】 あなたは新卒2年目の営業担当。今日の16:50、担当クライアントから「明日の提案資料を今夜中に送ってほしい」と連絡が入りました。",
+      q:"あなたはどのように対応しますか？",
+      opts:["上司に相談し、作業分担を依頼する","期待値を確認したうえで、自分で対応できる範囲を伝える","ひとまず「承知しました」と返信し、残業して仕上げる","翌朝一番の対応でよいか、クライアントに確認する"],
+      hint:"優先度・コミュニケーション・判断力を評価しています"
+    },
+    {
+      scene:"【状況】 提案書を仕上げ、翌朝クライアントに送付。先方から「方向性は良いが、コスト試算を追加してほしい」とフィードバックが届きました。",
+      q:"次のアクションとして最も適切なのは？",
+      opts:["すぐに試算を作成し、当日中に送り直す","必要な情報が揃っているか確認してから着手する","上司に対応を引き継ぐよう相談する","コスト試算の必要性をクライアントに再確認する"],
+      hint:"実行力・情報収集・優先判断を評価しています"
+    },
+  ];
+  const [phase,setPhase]=useState('sim');
+  const [step,setStep]=useState(0);
+  const [sel,setSel]=useState(null);
+  const [answers,setAnswers]=useState([]);
+  const cur=STEPS[step];
+  const handleNext=()=>{
+    const nxt=[...answers,sel];
+    setAnswers(nxt);
+    if(step===STEPS.length-1){setPhase('result');}
+    else{setSel(null);setStep(s=>s+1);}
+  };
+  const reset=()=>{setPhase('sim');setStep(0);setSel(null);setAnswers([]);};
+  const axes=['傾聴力','提案力','実行力','協調性','論理思考','判断力'];
+  const axC=['#0B3D91','#1A73E8','#1B7F4F','#D45500','#6B21A8','#0891B2'];
+  const base=[62,58,67,70,60,65];
+  const adj0=[[3,6,0,8,0,0],[12,10,5,5,8,12],[-2,0,10,-8,-2,-10],[8,4,0,0,5,6]];
+  const adj1=[[-3,0,15,0,3,-5],[8,5,8,3,15,10],[0,0,-8,8,0,0],[10,10,0,0,8,6]];
+  const a0=answers[0]||0, a1=answers[1]||0;
+  const scores=base.map((b,i)=>Math.min(95,Math.max(35,b+(adj0[a0]||adj0[0])[i]+(adj1[a1]||adj1[0])[i])));
+  const top=axes[scores.indexOf(Math.max(...scores))];
+  const cmts={
+    '傾聴力':'傾聴・共感を重視した判断傾向が見られます。相手の意図を汲み取り、信頼関係を構築するコミュニケーションが得意なタイプです。',
+    '提案力':'提案・問題解決を重視した判断傾向が見られます。課題の本質を捉え、付加価値のある提案を生み出す力が期待できます。',
+    '実行力':'スピードと実行を重視した判断傾向が見られます。推進力と行動力を強みに持つ、自走型のタイプが伺えます。',
+    '協調性':'チームや関係者を巻き込む判断傾向が見られます。組織の調和を意識した、協調型のコミュニケーションスタイルです。',
+    '論理思考':'情報整理と論理を重視した判断傾向が見られます。根拠に基づいた意思決定と、構造的な思考力が強みです。',
+    '判断力':'状況判断と優先順位付けに優れた傾向が見られます。複雑な状況下でも適切な判断を下せる、判断軸の明確なタイプです。',
+  };
+  const optL=['A','B','C','D'];
+  return(
+    <section id="simpreview" className="py-20 bg-white">
+      <div className="max-w-6xl mx-auto px-4">
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold bg-blue-50 text-blue-700 mb-4">
+            <I d={Ico.play} size={13}/>候補者体験プレビュー
+          </div>
+          <h2 className="text-3xl font-black text-ink mb-3">候補者は、こんな体験をします。</h2>
+          <p className="text-gray-500 max-w-xl mx-auto">実際の業務シナリオに基づいた設問で、判断力・思考プロセスを自然に引き出します。採用担当者はURLを配布するだけ。</p>
+        </div>
+        <div className="lg:grid lg:grid-cols-2 lg:gap-14 items-start">
+          <div className="relative">
+            <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden">
+              <div className="flex items-center gap-2 px-5 py-3 bg-gray-50 border-b border-gray-100">
+                <div className="flex gap-1.5">
+                  {[CTA_C,'#F59E0B',OK].map((c,i)=><div key={i} className="w-3 h-3 rounded-full" style={{background:c}}/>)}
+                </div>
+                <div className="flex-1 mx-4 bg-white border border-gray-200 rounded-lg px-3 py-1 text-xs text-gray-400 text-center">rightjob.jp/sim/●●●●●●</div>
+              </div>
+              {phase==='sim'?(
+                <div className="p-6 sm:p-8">
+                  <div className="flex items-center justify-between mb-5">
+                    <span className="text-xs font-bold text-gray-400">ジョブシミュレーション</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-gray-400">{step+1} / {STEPS.length}</span>
+                      <div className="flex gap-1">
+                        {STEPS.map((_,i)=><div key={i} className="w-8 h-1.5 rounded-full transition-all" style={{background:i<=step?BRAND:'#E5E7EB'}}/>)}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-blue-50 rounded-xl px-4 py-3 mb-5 text-xs text-gray-600 leading-relaxed border-l-4 border-blue-400">{cur.scene}</div>
+                  <p className="font-black text-sm text-ink mb-4">{cur.q}</p>
+                  <div className="space-y-2.5 mb-5">
+                    {cur.opts.map((o,i)=>(
+                      <button key={i} onClick={()=>setSel(i)}
+                        className={`w-full text-left px-4 py-3 rounded-xl border text-sm transition-all ${sel===i?'border-blue-500 bg-blue-50 text-blue-800 font-bold':'border-gray-200 text-gray-600 hover:border-blue-300 hover:bg-blue-50/50'}`}>
+                        <span className="font-black text-gray-400 mr-2">{String.fromCharCode(65+i)}.</span>{o}
+                      </button>
+                    ))}
+                  </div>
+                  {sel!==null&&(
+                    <div className="flex items-start gap-2 bg-green-50 border border-green-200 rounded-xl px-4 py-3 mb-4 text-xs text-green-700 fade-in">
+                      <I d={Ico.check} size={14} color={OK} sw={2.5}/>
+                      <span>{cur.hint}</span>
+                    </div>
+                  )}
+                  <button onClick={handleNext} disabled={sel===null}
+                    className="w-full py-3.5 text-white font-bold rounded-xl text-sm transition-all disabled:opacity-40 hover:opacity-90 hover:scale-105"
+                    style={{background:sel!==null?`linear-gradient(135deg,${BRAND},${ACTION})`:'#9CA3AF'}}>
+                    {step<STEPS.length-1?'次のシナリオへ →':'体験完了 — 評価結果を見る ✓'}
+                  </button>
+                </div>
+              ):(
+                <div className="p-6 sm:p-8 fade-in">
+                  <div className="text-center mb-5">
+                    <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center mx-auto mb-3">
+                      <I d={Ico.check} size={24} color={OK} sw={2.5}/>
+                    </div>
+                    <div className="text-sm font-black text-green-700 mb-0.5">体験完了 — AIスコアリング完了</div>
+                    <div className="text-xs text-gray-400">採用担当者のダッシュボードに自動送信されました</div>
+                  </div>
+                  <div className="bg-gray-50 rounded-2xl p-4 mb-4">
+                    <div className="text-xs font-black text-gray-400 mb-3 uppercase tracking-wider">6軸スコアリング結果</div>
+                    <div className="space-y-2.5">
+                      {axes.map((ax,i)=>(
+                        <div key={ax}>
+                          <div className="flex justify-between text-xs mb-1">
+                            <span className="font-bold text-gray-600">{ax}</span>
+                            <span className="font-black" style={{color:axC[i]}}>{scores[i]}</span>
+                          </div>
+                          <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+                            <div className="h-full rounded-full" style={{width:`${scores[i]}%`,background:axC[i]}}/>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="space-y-2 mb-4">
+                    {answers.map((a,i)=>(
+                      <div key={i} className="flex items-start gap-2 text-xs bg-white border border-gray-100 rounded-xl px-3 py-2.5">
+                        <span className="font-black text-blue-400 flex-shrink-0">Q{i+1}</span>
+                        <span className="text-gray-500">選択：<span className="font-bold text-gray-700">{optL[a]}. {STEPS[i].opts[a]}</span></span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 mb-4">
+                    <div className="text-xs font-black text-blue-700 mb-1">AIコメント（採用担当者向け）</div>
+                    <p className="text-xs text-gray-600 leading-relaxed">{cmts[top]}</p>
+                  </div>
+                  <button onClick={reset} className="w-full py-3 text-gray-500 border border-gray-200 rounded-xl text-xs font-bold hover:bg-gray-50 transition-colors">
+                    ↺ もう一度体験する
+                  </button>
+                </div>
+              )}
+            </div>
+            <div className="absolute -bottom-4 -right-4 w-24 h-24 rounded-full opacity-10 -z-10" style={{background:BRAND}}/>
+          </div>
+          <div className="mt-10 lg:mt-0 space-y-6">
+            {[
+              {icon:Ico.build, color:BRAND,    title:'実務シナリオで思考プロセスを可視化',  body:'面接では引き出せない判断軸・優先順位の付け方・対人スキルを、実務に即したシナリオで自然に計測します。'},
+              {icon:Ico.star,  color:'#D45500', title:'候補者の志望度が上がる選考体験',      body:'「他社にはない選考体験で志望度が上がった」という声が多数。辞退率の低下と採用ブランドの向上を同時に実現します。'},
+              {icon:Ico.bar,   color:OK,        title:'結果はリアルタイムでダッシュボードへ', body:'体験完了後すぐに6軸スコアが自動集計。面接官は候補者の傾向を把握した状態で面接に臨めます。'},
+            ].map((it,i)=>(
+              <div key={i} className="flex gap-4">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{background:it.color+'15'}}>
+                  <I d={it.icon} size={20} color={it.color}/>
+                </div>
+                <div>
+                  <div className="font-black text-sm text-ink mb-1">{it.title}</div>
+                  <div className="text-xs text-gray-500 leading-relaxed">{it.body}</div>
+                </div>
+              </div>
+            ))}
+            <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
+              <div className="text-xs font-bold text-gray-400 mb-1">先行導入企業 担当者コメント</div>
+              <p className="text-sm text-gray-600 leading-relaxed">"コンサル職の選考フローに組み込めるレベル。役員も面接でこのデータを使いたいと言っています。"</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+});
+
+/* ── ROI CALC ── */
+const ROICalc=((({onDemo})=>{
+  const [hires,setHires]=useState(20);
+  const exits=Math.round(hires*0.349);
+  const loss=exits*300;
+  const cost=18*12;
+  const roi=Math.round(loss/cost*10)/10;
+  return(
+    <section id="roi" className="py-20 bg-white">
+      <div className="max-w-4xl mx-auto px-4">
+        <h2 className="text-center text-3xl font-black text-ink mb-3">ROIシミュレーター</h2>
+        <p className="text-center text-gray-500 mb-12">貴社の採用規模で、体験型採用の費用対効果を試算できます。</p>
+        <div className="bg-gradient-to-br from-blue-50 to-white border border-blue-100 rounded-3xl p-8 sm:p-12">
+          <div className="mb-8">
+            <div className="flex justify-between items-center mb-3">
+              <label className="font-black text-ink">年間採用人数</label>
+              <span className="text-3xl font-black" style={{color:BRAND}}>{hires}名</span>
+            </div>
+            <input type="range" min="5" max="200" step="5" value={hires} onChange={e=>setHires(Number(e.target.value))} className="w-full h-2 rounded-lg cursor-pointer"/>
+            <div className="flex justify-between text-xs text-gray-400 mt-1"><span>5名</span><span>200名</span></div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            {[
+              {label:'想定 早期離職者数',val:`${exits}名`,sub:`年間採用の34.9%（厚労省平均）`,color:CTA_C},
+              {label:'年間 早期離職損失額',val:`約${loss}万円`,sub:`1名あたり約300万円×${exits}名（業界試算）`,color:BRAND},
+              {label:'体験型採用 年間費用',val:'約216万円',sub:'スタンダードプラン（月18万円×12ヶ月）',color:'#6B7280'},
+            ].map((it,i)=>(
+              <div key={i} className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm text-center">
+                <div className="text-xs font-bold text-gray-500 mb-2">{it.label}</div>
+                <div className="text-2xl font-black mb-1" style={{color:it.color}}>{it.val}</div>
+                <div className="text-xs text-gray-400 leading-relaxed">{it.sub}</div>
+              </div>
+            ))}
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-blue-200 text-center">
+            <div className="text-sm font-bold text-gray-500 mb-1">期待ROI（損失削減額 ÷ 年間費用）</div>
+            <div className="text-5xl font-black mb-2" style={{color:BRAND}}>{roi}倍</div>
+            <p className="text-sm text-gray-500">年間採用{hires}名規模の場合、体験型採用の導入により早期離職損失の削減が期待できます。</p>
+            <p className="text-xs text-gray-400 mt-2">※厚労省データ・業界試算を用いた参考値です。実際の効果を保証するものではありません。</p>
+            <button onClick={onDemo} className="mt-5 px-10 py-3.5 text-white font-bold rounded-xl shadow transition-all hover:opacity-90 hover:scale-105 text-sm" style={{background:CTA_C}}>
+              詳細なROI試算・デモを申し込む →
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}));
+
+/* ── PRICING ── */
+const Pricing=((({onDemo})=>(
+  <section id="pricing" className="py-20" style={{background:BG}}>
+    <div className="max-w-6xl mx-auto px-4">
+      <h2 className="text-center text-3xl font-black text-ink mb-3">選べる3つのプラン</h2>
+      <p className="text-center text-gray-500 mb-3">初期費用0円。最短2週間で導入開始。</p>
+      <div className="flex justify-center mb-12">
+        <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-full text-sm text-green-700 font-bold">
+          <I d={Ico.check} size={14} color={OK}/>
+          早期離職1名（300万円）を防ぐだけで、年間プラン費用が十分に回収できます
+        </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {[
+          {name:'エントリー',     price:'8',  per:'万円/月', rec:false,
+            features:['1職種公開','標準AIレポート','メール・チャットサポート'],
+            for:'少人数採用・試験導入に',note:'年96万円 — 早期離職1名防止で約3.1倍ROI'},
+          {name:'スタンダード',   price:'18', per:'万円/月', rec:true,
+            features:['3職種公開','カスタムフィードバック','専任担当者サポート'],
+            for:'中規模採用・複数職種に',note:'年216万円 — 早期離職1名防止で黒字化（1名で元が取れます）'},
+          {name:'エンタープライズ',price:'要相談',per:'', rec:false,
+            features:['職種数・体験数無制限','オリジナル開発対応','専任コンサルタント','稟議・導入支援フルサポート'],
+            for:'大規模採用・グループ展開に',note:'採用規模・要件に応じて個別見積もり'},
+        ].map((p,i)=>(
+          <div key={i} className={`relative bg-white rounded-3xl p-8 border transition-all ${p.rec?'ring-4 ring-blue-100 border-blue-500 shadow-2xl scale-105':'border-gray-200 shadow-sm card-hover'}`}>
+            {p.rec&&<div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 text-xs font-black text-white rounded-full shadow" style={{background:BRAND}}>MOST POPULAR</div>}
+            <div className="text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">{p.for}</div>
+            <div className="text-2xl font-black text-ink mb-4">{p.name}</div>
+            <div className="flex items-baseline gap-1 mb-2">
+              {p.per?<><span className="text-5xl font-black" style={{color:p.rec?BRAND:'#374151'}}>{p.price}</span><span className="text-gray-500 font-bold">{p.per}</span></>:<span className="text-3xl font-black" style={{color:BRAND}}>お問い合わせ</span>}
+            </div>
+            <div className="text-xs text-green-700 font-bold mb-6 bg-green-50 rounded-lg px-3 py-1.5">{p.note}</div>
+            <ul className="space-y-3 mb-8">
+              {p.features.map(f=><li key={f} className="flex items-center gap-2.5 text-sm text-gray-600"><I d={Ico.check} size={15} color={OK}/>{f}</li>)}
+            </ul>
+            <button onClick={onDemo} className={`w-full py-3.5 font-bold rounded-xl text-sm transition-all ${p.rec?'text-white hover:opacity-90':'text-gray-700 border-2 border-gray-200 hover:border-gray-300'}`}
+              style={{...(p.rec&&{background:BRAND})}}>
+              {p.rec?'今すぐ申し込む':'無料デモで相談する'}
+            </button>
+          </div>
+        ))}
+      </div>
+      <p className="text-center text-xs text-gray-400 mt-8">※ すべてのプランで初期費用0円・最短2週間での導入開始が可能です。</p>
+    </div>
+  </section>
+)));
+
+/* ── ONBOARDING ── */
+const Onboarding=(()=>(
+  <section id="onboarding" className="py-20 bg-white">
+    <div className="max-w-4xl mx-auto px-4 text-center">
+      <h2 className="text-3xl font-black text-ink mb-3">最短2週間で導入開始</h2>
+      <p className="text-gray-500 mb-14">無料相談から公開まで、専任担当がフルサポートします。</p>
+      <div className="flex flex-col md:flex-row gap-0">
+        {[
+          {n:'01',title:'無料相談',       desc:'課題・採用要件をヒアリングし最適プランをご提案。'},
+          {n:'02',title:'要件ヒアリング', desc:'業務資料・求める人物像を整理。'},
+          {n:'03',title:'AI生成・確認',   desc:'最短5日でコンテンツを生成。レビュー後に微調整。'},
+          {n:'04',title:'公開・運用開始', desc:'URLを配布。ダッシュボードでインサイトを確認。'},
+          {n:'05',title:'効果測定・改善', desc:'月次レポートで改善サイクルを継続実施。'},
+        ].map((s,i)=>(
+          <div key={i} className="flex-1 flex flex-col items-center text-center relative">
+            {i<4&&<div className="hidden md:block absolute top-6 right-0 w-1/2 h-0.5 bg-blue-100 z-0"/>}
+            <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-black text-sm z-10 shadow mb-4"
+              style={{background:`linear-gradient(135deg,${BRAND},${ACTION})`}}>{s.n}</div>
+            <div className="font-black text-sm text-ink mb-2">{s.title}</div>
+            <div className="text-xs text-gray-400 leading-relaxed px-2">{s.desc}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+));
+
+/* ── VOICE ── */
+const Voice=(()=>(
+  <section id="voice" className="py-20" style={{background:BG}}>
+    <div className="max-w-7xl mx-auto px-4">
+      <h2 className="text-center text-3xl font-black text-ink mb-3">導入企業・体験者の声</h2>
+      <p className="text-center text-xs text-gray-400 mb-12">※ 先行導入・体験参加者からの定性的な評価です。導入効果を保証するものではありません。</p>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+          <div className="bg-white p-7 rounded-2xl shadow-sm border border-gray-100 flex flex-col card-hover">
+            <div className="text-3xl text-blue-200 font-black leading-none mb-4">"</div>
+            <p className="text-gray-600 text-sm leading-relaxed flex-1 mb-5">コンサル職の選考フローの一つとして活用できるレベルです。役員も「面接でこのデータを活用したい」と言っています。</p>
+            <div>
+              <div className="font-bold text-sm text-gray-800">コンサルティング企業</div>
+              <div className="text-xs text-gray-400 mt-0.5">採用責任者（先行導入企業）</div>
+            </div>
+          </div>
+          <div className="bg-white p-7 rounded-2xl shadow-sm border border-gray-100 flex flex-col card-hover">
+            <div className="text-3xl text-blue-200 font-black leading-none mb-4">"</div>
+            <p className="text-gray-600 text-sm leading-relaxed flex-1 mb-5">守秘義務が強い業界でも社風や考え方を伝えるツールとして機能します。面接精度が上がりました。</p>
+            <div>
+              <div className="font-bold text-sm text-gray-800">IT企業</div>
+              <div className="text-xs text-gray-400 mt-0.5">人事部長（先行導入企業）</div>
+            </div>
+          </div>
+          <div className="bg-white p-7 rounded-2xl shadow-sm border border-gray-100 flex flex-col card-hover">
+            <div className="text-3xl text-blue-200 font-black leading-none mb-4">"</div>
+            <p className="text-gray-600 text-sm leading-relaxed flex-1 mb-5">「リアルな業務と楽しさが伝わりました」「他社にはない選考体験で、志望度が上がりました」</p>
+            <div>
+              <div className="font-bold text-sm text-gray-800">求職者（20代・3名）</div>
+              <div className="text-xs text-gray-400 mt-0.5">体験後アンケート集計</div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </section>
+));
+
+/* ── FAQ ── */
+const FAQ_ITEMS = [{"q": "どのような形で選考フローに組み込めますか？", "a": "書類選考通過後のスクリーニング、または最終面接前のケース体験として活用できます。先行導入企業では「コンサル職の選考フローの一つとして使えるレベル」との評価を得ています。"}, {"q": "守秘義務のある内容でも対応できますか？", "a": "守秘義務のある詳細情報を開示せず、社風・価値観・思考プロセスをシナリオ形式で伝えることが可能です。"}, {"q": "6軸スコアリングはどのように活用しますか？", "a": "傾聴力・提案力・実行力・協調性・論理思考・判断力の6軸でスコアリングし、面接での確認ポイントや評価軸として活用できます。採用可否の参考データとしての活用を推奨しています。"}, {"q": "コンテンツの専門性はどう担保されますか？", "a": "各職種のプロ講師・専門家との連携のもとコンテンツを設計しています。実務水準のケーススタディで候補者のスキル・適性を正確に確認できます。"}];
+
+const FAQ=((({onDemo})=>{
+  const [open,setOpen]=useState(null);
+  return(
+    <section id="faq" className="py-20 bg-white">
+      <div className="max-w-3xl mx-auto px-4">
+        <h2 className="text-center text-3xl font-black text-ink mb-3">よくある質問</h2>
+        <p className="text-center text-gray-500 mb-14">ご不明な点はお気軽にお問い合わせください。</p>
+        <div className="space-y-3">
+          {FAQ_ITEMS.map((it,i)=>(
+            <React.Fragment key={i}>
+              <div className="border border-gray-200 rounded-2xl overflow-hidden">
+                <button onClick={()=>setOpen(open===i?null:i)}
+                  className="w-full text-left p-5 flex justify-between items-center hover:bg-gray-50 transition-colors">
+                  <span className="font-bold text-sm text-ink pr-4">{it.q}</span>
+                  <div className={`flex-shrink-0 transition-transform ${open===i?'rotate-45':''}`}>
+                    <I d={Ico.x} size={16} color={open===i?CTA_C:'#9AA5B4'}/>
+                  </div>
+                </button>
+                {open===i&&<div className="px-5 pb-5 text-sm text-gray-500 leading-relaxed border-t border-gray-100 pt-4 fade-in">{it.a}</div>}
+              </div>
+              {i===1&&(
+                <div className="my-6 p-6 rounded-2xl border-2 border-dashed text-center" style={{borderColor:ACTION,background:'#EFF6FF'}}>
+                  <p className="text-sm font-bold text-gray-700 mb-4">実際の導入効果をデモで体感しませんか？</p>
+                  <button onClick={onDemo} className="px-8 py-3 text-white font-bold rounded-xl text-sm shadow transition-all hover:opacity-90 hover:scale-105" style={{background:ACTION}}>
+                    無料デモを申し込む →
+                  </button>
+                </div>
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}));
+
+/* ── FOOTER CTA ── */
+const FooterCTA=((({onDemo})=>(
+  <section className="py-24 text-white text-center" style={{background:`linear-gradient(135deg,${BRAND} 0%,${ACTION} 100%)`}}>
+    <div className="max-w-3xl mx-auto px-4">
+      <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 rounded-full text-sm font-bold mb-8">
+        <I d={Ico.shield} size={15} color="#fff"/>初期費用0円・最短2週間で導入開始
+      </div>
+      <h2 className="text-4xl font-black mb-6 leading-tight">面接では見えない実務判断力を、<br/>体験で可視化する。</h2>
+      <p className="text-white/70 mb-10 text-lg">初期費用0円・最短2週間。6軸スコアリングのサンプルはデモ時にご確認いただけます。</p>
+      <div className="flex flex-col sm:flex-row justify-center gap-4">
+        <button onClick={onDemo} className="px-10 py-5 bg-white font-black text-lg rounded-2xl shadow-xl transition-all hover:scale-105" style={{color:BRAND}}>
+          無料デモを申し込む
+        </button>
+        <button onClick={()=>scrollTo('roi')} className="px-10 py-5 bg-transparent border-2 border-white/40 text-white font-bold text-lg rounded-2xl transition-all hover:bg-white/10">
+          ROIシミュレーターを見る
+        </button>
+      </div>
+      <p className="mt-6 text-white/50 text-xs">担当者より2営業日以内にご連絡します。費用は一切かかりません。</p>
+      <p className="mt-10 text-white/40 text-xs">© 2026 RightJob Inc. All Rights Reserved.</p>
+    </div>
+  </section>
+)));
+
+/* ── FLOATING CTA ── */
+const FloatCTA=((({show,onDemo})=>(
+  <>
+    <div className="fixed bottom-4 left-4 right-4 z-40 md:hidden">
+      <button onClick={onDemo} className="w-full py-4 text-white font-bold rounded-full shadow-2xl flex items-center justify-center gap-2" style={{background:CTA_C}}>
+        デモを予約する <I d={Ico.chevR} size={18} color="#fff"/>
+      </button>
+    </div>
+    {show&&(
+      <div className="sticky-cta-pc">
+        <button onClick={onDemo} className="flex flex-col items-center gap-2 px-4 py-5 text-white font-bold rounded-2xl shadow-2xl transition-all hover:scale-105"
+          style={{background:`linear-gradient(180deg,${BRAND},${ACTION})`}}>
+          <I d={Ico.phone} size={22} color="#fff" sw={2}/>
+          <span className="text-xs font-black tracking-wide" style={{writingMode:'vertical-rl',textOrientation:'mixed'}}>
+            デモを予約する
+          </span>
+        </button>
+      </div>
+    )}
+  </>
+)));
+
+/* ── APP ── */
+const App=(()=>{
+  const [modal,setModal]=useState(false);
+  const [showF,setShowF]=useState(false);
+  useEffect(()=>{
+    const fn=()=>setShowF(window.scrollY>400);
+    window.addEventListener('scroll',fn,{passive:true});
+    return()=>window.removeEventListener('scroll',fn);
+  },[]);
+  return(
+    <div className="min-h-screen bg-white overflow-x-hidden">
+      <Header onDemo={()=>setModal(true)}/>
+      <main className="fade-in">
+        <Hero onDemo={()=>setModal(true)}/>
+        <TrustBar/>
+        <Problem/>
+        <Steps onDemo={()=>setModal(true)}/>
+        <SimPreview/>
+        <ROICalc onDemo={()=>setModal(true)}/>
+        <Pricing onDemo={()=>setModal(true)}/>
+        <Onboarding/>
+        <Voice/>
+        <FAQ onDemo={()=>setModal(true)}/>
+        <FooterCTA onDemo={()=>setModal(true)}/>
+      </main>
+      <FloatCTA show={showF} onDemo={()=>setModal(true)}/>
+      {modal&&<Modal onClose={()=>setModal(false)}/>}
+    </div>
+  );
+});
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
