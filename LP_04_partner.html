@@ -66,6 +66,9 @@ const Modal=(({onClose})=>{
   const submit=async e=>{
     e.preventDefault();setBusy(true);
     try{const b=new URLSearchParams();
+      b.append('fvv','1');
+      b.append('pageHistory','0');
+      b.append('fbzx',Math.random().toString(36).slice(2));
       ['company','name','dept','position','email','size','status','issues'].forEach(k=>b.append(GF[k],f[k]));
       b.append(GF.privacy,'「プライバシーポリシー」に同意する');
       await fetch(GF_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:b.toString()});
