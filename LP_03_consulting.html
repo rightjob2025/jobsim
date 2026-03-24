@@ -130,7 +130,7 @@ const Modal=(({onClose})=>{
                   <div><label className="text-xs font-bold text-gray-500 block mb-1">検討状況 <span className="text-red-500">*</span></label>
                     <select required value={f.status} onChange={e=>set('status',e.target.value)} className={inp+' bg-white'}>
                       <option value="">選択してください</option>
-                      {['具体的に導入を検討','比較検討中','まずは情報収集','その他'].map(v=><option key={v}>{v}</option>)}
+                      {['具体的に導入を検討','まずは情報収集','その他'].map(v=><option key={v}>{v}</option>)}
                     </select></div>
                 </div>
                 <div><label className="text-xs font-bold text-gray-500 block mb-1">課題・ご要望</label>
