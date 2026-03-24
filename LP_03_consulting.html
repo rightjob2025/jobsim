@@ -63,16 +63,32 @@ const Modal=(({onClose})=>{
   const [f,setF]=useState({company:'',name:'',dept:'',position:'',email:'',size:'',status:'',issues:'',privacy:false});
   const [sent,setSent]=useState(false);const [busy,setBusy]=useState(false);
   const set=(k,v)=>setF(p=>(({...p,[k]:v})));
-  const submit=async e=>{
+  const submit=e=>{
     e.preventDefault();setBusy(true);
-    try{const b=new URLSearchParams();
-      b.append('fvv','1');
-      b.append('pageHistory','0');
-      b.append('fbzx',Math.random().toString(36).slice(2));
-      ['company','name','dept','position','email','size','status','issues'].forEach(k=>b.append(GF[k],f[k]));
-      b.append(GF.privacy,'「プライバシーポリシー」に同意する');
-      await fetch(GF_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:b.toString()});
-    }catch(_){}
+    const ifrId='gf-'+Date.now();
+    const ifr=document.createElement('iframe');
+    ifr.name=ifrId;
+    ifr.style.cssText='display:none;position:fixed;top:-9999px;left:-9999px;';
+    document.body.appendChild(ifr);
+    const frm=document.createElement('form');
+    frm.method='POST';frm.action=GF_URL;frm.target=ifrId;
+    const fields={
+      'fvv':'1','pageHistory':'0','fbzx':Math.random().toString(36).slice(2),
+      [GF.company]:f.company,[GF.name]:f.name,[GF.dept]:f.dept,
+      [GF.position]:f.position,[GF.email]:f.email,[GF.size]:f.size,
+      [GF.status]:f.status,[GF.issues]:f.issues,
+      [GF.privacy]:'「プライバシーポリシー」に同意する',
+    };
+    Object.entries(fields).forEach(([k,v])=>{
+      const inp=document.createElement('input');
+      inp.type='hidden';inp.name=k;inp.value=v;
+      frm.appendChild(inp);
+    });
+    document.body.appendChild(frm);
+    frm.submit();
+    setTimeout(()=>{
+      try{document.body.removeChild(frm);document.body.removeChild(ifr);}catch(_){}
+    },3000);
     setBusy(false);setSent(true);
   };
   const inp="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400 transition-colors";
