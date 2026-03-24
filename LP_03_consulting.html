@@ -65,30 +65,19 @@ const Modal=(({onClose})=>{
   const set=(k,v)=>setF(p=>(({...p,[k]:v})));
   const submit=e=>{
     e.preventDefault();setBusy(true);
-    const ifrId='gf-'+Date.now();
-    const ifr=document.createElement('iframe');
-    ifr.name=ifrId;
-    ifr.style.cssText='display:none;position:fixed;top:-9999px;left:-9999px;';
-    document.body.appendChild(ifr);
-    const frm=document.createElement('form');
-    frm.method='POST';frm.action=GF_URL;frm.target=ifrId;
-    const fields={
-      'fvv':'1','pageHistory':'0','fbzx':Math.random().toString(36).slice(2),
-      [GF.company]:f.company,[GF.name]:f.name,[GF.dept]:f.dept,
-      [GF.position]:f.position,[GF.email]:f.email,[GF.size]:f.size,
-      [GF.status]:f.status,
-      [GF.privacy]:'「プライバシーポリシー」に同意する',
-    };
-    Object.entries(fields).forEach(([k,v])=>{
-      const inp=document.createElement('input');
-      inp.type='hidden';inp.name=k;inp.value=v;
-      frm.appendChild(inp);
-    });
-    document.body.appendChild(frm);
-    frm.submit();
-    setTimeout(()=>{
-      try{document.body.removeChild(frm);document.body.removeChild(ifr);}catch(_){}
-    },3000);
+    const p=new URLSearchParams();
+    p.set('usp','pp_url');
+    p.set(GF.company,f.company);
+    p.set(GF.name,f.name);
+    if(f.dept)p.set(GF.dept,f.dept);
+    if(f.position)p.set(GF.position,f.position);
+    p.set(GF.email,f.email);
+    p.set(GF.size,f.size);
+    p.set(GF.status,f.status);
+    if(f.issues)p.set(GF.issues,f.issues);
+    p.set(GF.privacy,'「プライバシーポリシー」に同意する');
+    const viewUrl=GF_URL.replace('/formResponse','/viewform')+'?'+p.toString();
+    window.open(viewUrl,'_blank','noopener');
     setBusy(false);setSent(true);
   };
   const inp="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400 transition-colors";
@@ -154,8 +143,9 @@ const Modal=(({onClose})=>{
               <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
                 <I d={Ico.check} size={32} color={OK} sw={2.5}/>
               </div>
-              <h3 className="text-2xl font-black text-ink mb-3">お申し込みありがとうございます</h3>
-              <p className="text-gray-500 text-sm mb-8">担当者より2営業日以内にご登録メールアドレスへご連絡いたします。</p>
+              <h3 className="text-2xl font-black text-ink mb-3">入力内容を確認してください</h3>
+              <p className="text-gray-500 text-sm mb-2">新しいタブでGoogleフォームが開きました。</p>
+              <p className="text-gray-500 text-sm mb-8">内容をご確認の上、<span className="font-bold text-gray-700">「送信」ボタンを押して</span>お申し込みを完了してください。</p>
               <button onClick={onClose} className="px-8 py-3 text-white font-bold rounded-xl" style={{background:BRAND}}>閉じる</button>
             </div>
           )}
