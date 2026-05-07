@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rightjob ジョブシミュレーション | 採用担当者向け</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --ink: #1a2332;
+  --ink-light: #2d3e50;
+  --ink-muted: #5a6978;
+  --warm-gray: #8b95a0;
+  --border: #e2e0dc;
+  --bg: #faf9f7;
+  --bg-warm: #f5f3ef;
+  --white: #ffffff;
+  --accent: #2c5282;
+  --accent-light: #3d6ea8;
+  --accent-bg: #edf2f8;
+  --accent-border: #c8daf0;
+  --green: #1a7a42;
+  --green-bg: #ecf7f0;
+  --font-sans: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Noto Serif JP', serif;
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.9;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 4vw, 2.5rem);
+}
+
+.section {
+  padding: clamp(4rem, 9vh, 7rem) 0;
+}
+
+/* Reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-d1 { transition-delay: 0.1s; }
+.reveal-d2 { transition-delay: 0.2s; }
+.reveal-d3 { transition-delay: 0.3s; }
+
+/* ===== NAV ===== */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 1rem 0;
+  background: rgba(250, 249, 247, 0.9);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s;
+}
+.nav.scrolled { border-bottom-color: var(--border); }
+.nav .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.nav-logo {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.nav-link {
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-link:hover { color: var(--ink); }
+.nav-cta {
+  padding: 0.55rem 1.2rem;
+  background: var(--accent);
+  color: var(--white);
+  font-size: 0.8rem;
+  font-weight: 500;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.nav-cta:hover { background: var(--accent-light); }
+
+/* ===== HERO ===== */
+.hero {
+  padding-top: 8rem;
+  padding-bottom: 5rem;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+}
+.hero-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3.5rem;
+  align-items: center;
+}
+.hero-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  margin-bottom: 1rem;
+}
+.hero-headline {
+  font-family: var(--font-serif);
+  font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+  font-weight: 700;
+  line-height: 1.6;
+  margin-bottom: 1.2rem;
+  color: var(--ink);
+}
+.hero-sub {
+  font-size: 0.92rem;
+  color: var(--ink-muted);
+  line-height: 1.9;
+  margin-bottom: 2rem;
+}
+.hero-ctas {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+.hero-video {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--bg-warm);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+}
+.hero-video { position: relative; }
+.hero-video video.thumb {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  background: var(--bg-warm);
+}
+.video-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  background: rgba(26, 35, 50, 0.35);
+  cursor: pointer;
+}
+
+/* Video modal */
+.video-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(7, 14, 26, 0.88);
+  backdrop-filter: blur(6px);
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+.video-modal.is-open { display: flex; }
+.video-modal-inner {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+}
+.video-modal video {
+  display: block;
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.video-modal-close {
+  position: absolute;
+  top: -44px;
+  right: 0;
+  background: none;
+  border: none;
+  color: var(--white);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.4rem;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.video-modal-close:hover { opacity: 1; }
+
+/* Image lightbox */
+.step-image img, .report-card img {
+  cursor: zoom-in;
+}
+.img-lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  background: rgba(7, 14, 26, 0.88);
+  backdrop-filter: blur(6px);
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  cursor: zoom-out;
+}
+.img-lightbox.is-open { display: flex; }
+.img-lightbox img {
+  max-width: 95vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.img-lightbox-close {
+  position: fixed;
+  top: 1.2rem;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  color: var(--white);
+  font-size: 1.5rem;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  z-index: 9999;
+}
+.img-lightbox-close:hover { opacity: 1; }
+.play-btn {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.play-btn:hover {
+  transform: scale(1.06);
+  box-shadow: 0 4px 16px rgba(44, 82, 130, 0.25);
+}
+.play-btn svg { width: 20px; height: 20px; fill: white; margin-left: 2px; }
+.video-caption {
+  font-size: 0.72rem;
+  color: var(--warm-gray);
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.6rem;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+}
+.btn-primary {
+  background: var(--accent);
+  color: var(--white);
+}
+.btn-primary:hover { background: var(--accent-light); }
+.btn-outline {
+  background: transparent;
+  color: var(--ink-muted);
+  border: 1px solid var(--border);
+}
+.btn-outline:hover {
+  border-color: var(--ink-muted);
+  color: var(--ink);
+}
+
+/* ===== PROBLEM ===== */
+.problem { background: var(--bg); }
+.section-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+  margin-bottom: 0.8rem;
+}
+.section-heading {
+  font-family: var(--font-serif);
+  font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+  font-weight: 700;
+  line-height: 1.6;
+  margin-bottom: 2.5rem;
+  color: var(--ink);
+}
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+.problem-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.8rem;
+  transition: box-shadow 0.3s;
+}
+.problem-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+}
+.problem-card-num {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--warm-gray);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.8rem;
+}
+.problem-card h3 {
+  font-size: 0.92rem;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+  color: var(--ink);
+}
+.problem-card p {
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+  line-height: 1.8;
+}
+.stat-banner {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.2rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+}
+.stat-banner-num {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.stat-banner-text {
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+}
+
+/* ===== SOLUTION ===== */
+.solution {
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.solution-desc {
+  font-size: 0.92rem;
+  color: var(--ink-muted);
+  margin-bottom: 3rem;
+  max-width: 640px;
+}
+.flow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+.flow-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.2rem 1.8rem;
+  text-align: center;
+}
+.flow-item-num {
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+}
+.flow-item-circle {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+.flow-item-label {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+.flow-connector {
+  color: var(--border);
+  font-size: 1.2rem;
+  margin-top: 2.2rem;
+}
+.values-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+.value-chip {
+  text-align: center;
+  padding: 1.2rem;
+  background: var(--bg-warm);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+.value-chip-text {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--ink-light);
+}
+
+/* ===== STEPS ===== */
+.steps { background: var(--bg); }
+.step-block {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 3.5rem;
+  align-items: center;
+  padding: 3rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.step-block:last-child { border-bottom: none; }
+.step-block:nth-child(even) { direction: rtl; }
+.step-block:nth-child(even) > * { direction: ltr; }
+.step-num {
+  font-family: var(--font-serif);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 0.6rem;
+}
+.step-title {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  color: var(--ink);
+}
+.step-desc {
+  font-size: 0.87rem;
+  color: var(--ink-muted);
+  line-height: 1.9;
+}
+.step-image {
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--white);
+  border: 1px solid var(--border);
+  aspect-ratio: 16/10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+}
+.step-image-placeholder {
+  font-size: 0.75rem;
+  color: var(--warm-gray);
+  text-align: center;
+  padding: 1.5rem;
+  line-height: 1.8;
+}
+
+/* ===== REPORT ===== */
+.report {
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.report-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3.5rem;
+  align-items: center;
+}
+.report-card {
+  background: var(--bg-warm);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 2.5rem;
+}
+.report-score {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.report-score-num {
+  font-family: var(--font-serif);
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: var(--green);
+  line-height: 1;
+}
+.report-score-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--green);
+  letter-spacing: 0.08em;
+  margin-top: 0.4rem;
+}
+.report-axes { display: flex; flex-direction: column; gap: 1rem; }
+.report-axis { display: flex; align-items: center; gap: 0.8rem; }
+.report-axis-name {
+  font-size: 0.78rem;
+  color: var(--ink-muted);
+  min-width: 90px;
+  font-weight: 500;
+}
+.report-axis-track {
+  flex: 1;
+  height: 5px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.report-axis-bar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  transition: width 1s ease;
+}
+.report-axis-val {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ink-light);
+  min-width: 28px;
+  text-align: right;
+}
+.report-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.report-features li {
+  font-size: 0.87rem;
+  color: var(--ink-muted);
+  line-height: 1.8;
+  padding-left: 1.2rem;
+  position: relative;
+}
+.report-features li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.65rem;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* Mid CTA */
+.mid-cta {
+  margin-top: 3rem;
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-border);
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+}
+.mid-cta p {
+  font-size: 0.9rem;
+  color: var(--ink-light);
+  margin-bottom: 1rem;
+}
+
+/* ===== JOBS ===== */
+.jobs { background: var(--bg); }
+.job-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.job-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.8rem 1.2rem;
+  text-align: center;
+  position: relative;
+  transition: box-shadow 0.2s;
+}
+.job-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+.job-card.is-active {
+  border-color: var(--accent-border);
+  background: var(--accent-bg);
+}
+.job-card.is-active::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 8px 8px 0 0;
+}
+.job-card-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+.job-card-status {
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+.job-card.is-active .job-card-status { color: var(--accent); }
+.job-card:not(.is-active) .job-card-status { color: var(--warm-gray); }
+.job-card-badge {
+  display: inline-block;
+  margin-top: 0.6rem;
+  padding: 0.2rem 0.5rem;
+  background: var(--green-bg);
+  border-radius: 3px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--green);
+}
+.notify-bar {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.notify-bar-text {
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+  flex: 1;
+  min-width: 180px;
+}
+.notify-bar input {
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.82rem;
+  font-family: var(--font-sans);
+  width: 220px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.notify-bar input:focus { border-color: var(--accent); }
+.notify-bar button {
+  padding: 0.6rem 1rem;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: background 0.2s;
+}
+.notify-bar button:hover { background: var(--accent-light); }
+
+/* ===== BENEFITS ===== */
+.benefits {
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.benefit-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+.benefit-item {
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  transition: box-shadow 0.2s;
+}
+.benefit-item:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.03); }
+.benefit-item h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 0.4rem;
+}
+.benefit-item p {
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+  line-height: 1.8;
+}
+
+/* ===== FAQ ===== */
+.faq { background: var(--bg); }
+.faq-list {
+  max-width: 720px;
+  margin: 0 auto;
+}
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.3rem 0;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--ink);
+  user-select: none;
+  transition: color 0.2s;
+}
+.faq-q:hover { color: var(--accent); }
+.faq-toggle {
+  font-size: 1.1rem;
+  color: var(--warm-gray);
+  transition: transform 0.3s;
+  font-weight: 300;
+}
+.faq-item.open .faq-toggle { transform: rotate(45deg); }
+.faq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.3s;
+}
+.faq-item.open .faq-a {
+  max-height: 200px;
+  padding-bottom: 1.3rem;
+}
+.faq-a p {
+  font-size: 0.84rem;
+  color: var(--ink-muted);
+  line-height: 1.9;
+}
+
+/* ===== CTA FINAL ===== */
+.cta-final {
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  text-align: center;
+  padding: clamp(4rem, 10vh, 7rem) 0;
+}
+.cta-headline {
+  font-family: var(--font-serif);
+  font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  color: var(--ink);
+}
+.cta-sub {
+  font-size: 0.88rem;
+  color: var(--ink-muted);
+  margin-bottom: 2rem;
+}
+.cta-buttons {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  padding: 2.5rem 0;
+  text-align: center;
+  background: var(--bg);
+}
+.footer-text {
+  font-size: 0.72rem;
+  color: var(--warm-gray);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+  .problem-grid { grid-template-columns: 1fr; }
+  .step-block, .step-block:nth-child(even) {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    direction: ltr;
+  }
+  .report-grid { grid-template-columns: 1fr; }
+  .job-grid { grid-template-columns: repeat(2, 1fr); }
+  .benefit-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .hero-ctas { flex-direction: column; }
+  .btn { justify-content: center; width: 100%; }
+  .stat-banner { flex-direction: column; text-align: center; }
+  .flow { flex-direction: column; align-items: center; }
+  .flow-connector { transform: rotate(90deg); }
+  .values-row { grid-template-columns: 1fr; }
+  .job-grid { grid-template-columns: 1fr; }
+  .notify-bar { flex-direction: column; align-items: stretch; }
+  .notify-bar input { width: 100%; }
+  .cta-buttons { flex-direction: column; align-items: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="container">
+    <a href="#" class="nav-logo">Rightjob</a>
+    <div class="nav-right">
+      <a href="#steps" class="nav-link">サービス内容</a>
+      <a href="#faq" class="nav-link">よくある質問</a>
+      <a href="https://calendar.app.google/m3GUYkHfwfmo9YfS6" target="_blank" rel="noopener" class="nav-cta">無料相談を予約</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero section" id="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="reveal">
+        <div class="hero-label">採用担当者向け ジョブシミュレーション</div>
+        <h1 class="hero-headline">履歴書と面接だけで、<br>CS人材の"実務力"を<br>見抜けますか？</h1>
+        <p class="hero-sub">Rightjobのジョブシミュレーションは、カスタマーサクセスの実務プロセスを再現し、採用候補者の適性をAIが定量評価します。面接では見えない「現場で活躍する力」を、入社前に把握できます。</p>
+        <p style="font-size:0.75rem;color:var(--warm-gray);margin-top:0.4rem;">※カスタマーサクセス以外の職種にも対応予定</p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="https://calendar.app.google/m3GUYkHfwfmo9YfS6" target="_blank" rel="noopener">無料相談を予約する</a>
+          <a class="btn btn-outline" href="https://docs.google.com/forms/d/1lToq7kDKAOyXFuW8kgv3QEgoI8JlXFVU0gGOVbsB09I/" target="_blank" rel="noopener">サービス資料をダウンロード</a>
+        </div>
+      </div>
+      <div class="hero-video reveal reveal-d2">
+        <video class="thumb" preload="metadata" playsinline muted>
+          <source src="video_c_1min_hr/video_c_hr_1min_v1_final.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay" id="video-overlay">
+          <button class="play-btn" aria-label="動画を再生">
+            <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+          </button>
+          <span class="video-caption">サービス紹介（1分）</span>
+        </div>
+      </div>
+
+<!-- Video Modal -->
+<div class="video-modal" id="video-modal">
+  <div class="video-modal-inner">
+    <button class="video-modal-close" id="video-modal-close" aria-label="閉じる">✕</button>
+    <video id="modal-video" controls playsinline>
+      <source src="video_c_1min_hr/video_c_hr_1min_v1_final.mp4" type="video/mp4">
+    </video>
+  </div>
+</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem section" id="problem">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-eyebrow">課題</div>
+      <h2 class="section-heading">従来の採用手法では、<br>"実務で活躍する人材"を見抜けない</h2>
+    </div>
+    <div class="problem-grid">
+      <div class="problem-card reveal reveal-d1">
+        <div class="problem-card-num">01</div>
+        <h3>適性検査（SPI等）</h3>
+        <p>性格傾向や基礎学力は測れるが、CS実務で求められるヒアリング力・仮説構築力・提案力は測定できない。</p>
+      </div>
+      <div class="problem-card reveal reveal-d2">
+        <div class="problem-card-num">02</div>
+        <h3>ケース面接</h3>
+        <p>設計・評価に大きな工数がかかり、面接官ごとに評価がブレる属人化リスクがある。スケールしない。</p>
+      </div>
+      <div class="problem-card reveal reveal-d3">
+        <div class="problem-card-num">03</div>
+        <h3>試用期間での見極め</h3>
+        <p>採用後に発覚するミスマッチ。入社から離職までのコストは1人あたり数百万円にのぼることも。</p>
+      </div>
+    </div>
+    <div class="stat-banner reveal">
+      <span class="stat-banner-num">30%超</span>
+      <span class="stat-banner-text">── CS職の早期離職率。採用ミスマッチが組織を蝕んでいます。</span>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section class="solution section" id="solution">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-eyebrow">ソリューション</div>
+      <h2 class="section-heading">Rightjob ジョブシミュレーション</h2>
+      <p class="solution-desc">CS実務の一連の流れを再現し、候補者に実際の業務を体験してもらいます。AIがリアルタイムに実務適性を評価し、採用判断の材料をご提供します。</p>
+    </div>
+    <div class="flow reveal">
+      <div class="flow-item">
+        <span class="flow-item-num">STEP 1</span>
+        <div class="flow-item-circle">学</div>
+        <span class="flow-item-label">基礎学習</span>
+      </div>
+      <span class="flow-connector">→</span>
+      <div class="flow-item">
+        <span class="flow-item-num">STEP 2</span>
+        <div class="flow-item-circle">考</div>
+        <span class="flow-item-label">ケースワーク</span>
+      </div>
+      <span class="flow-connector">→</span>
+      <div class="flow-item">
+        <span class="flow-item-num">STEP 3</span>
+        <div class="flow-item-circle">話</div>
+        <span class="flow-item-label">商談ロープレ</span>
+      </div>
+      <span class="flow-connector">→</span>
+      <div class="flow-item">
+        <span class="flow-item-num">結果</span>
+        <div class="flow-item-circle">評</div>
+        <span class="flow-item-label">定量評価</span>
+      </div>
+    </div>
+    <div class="values-row reveal">
+      <div class="value-chip">
+        <div class="value-chip-text">オンラインで完結</div>
+      </div>
+      <div class="value-chip">
+        <div class="value-chip-text">所要時間 約60〜90分</div>
+      </div>
+      <div class="value-chip">
+        <div class="value-chip-text">AI自動採点</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STEPS -->
+<section class="steps section" id="steps">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-eyebrow">体験の流れ</div>
+      <h2 class="section-heading">3ステップで実務適性を測定します</h2>
+    </div>
+
+    <div class="step-block reveal">
+      <div class="step-text">
+        <div class="step-num">STEP 1</div>
+        <h3 class="step-title">基礎学習＆確認テスト</h3>
+        <p class="step-desc">カスタマーサクセスの基礎知識をインプットし、5問のクイズで理解度を確認。候補者の知識基盤がどの程度あるかを最初に把握します。未経験者でも基礎から取り組める設計です。</p>
+      </div>
+      <div class="step-image">
+        <img src="step05_s1_slide2.png" alt="CS基礎学習 スライド画面" style="width:100%;height:100%;object-fit:cover;">
+      </div>
+    </div>
+
+    <div class="step-block reveal">
+      <div class="step-text">
+        <div class="step-num">STEP 2</div>
+        <h3 class="step-title">ケーススタディ＆仮説ワーク</h3>
+        <p class="step-desc">実在企業をモデルにしたケーススタディ。業界情報と顧客課題を読み解き、提案仮説をワークシートに構築します。AIが思考プロセスをリアルタイムに採点し、論理性・具体性・実現可能性を多角的に評価します。</p>
+      </div>
+      <div class="step-image">
+        <img src="step12_s5_evaluating.png" alt="ワークシート AI採点結果 88点" style="width:100%;height:100%;object-fit:cover;">
+      </div>
+    </div>
+
+    <div class="step-block reveal">
+      <div class="step-text">
+        <div class="step-num">STEP 3</div>
+        <h3 class="step-title">AI商談ロープレ</h3>
+        <p class="step-desc">AIが演じる経営者との、10分間のリアルな商談ロープレ。共感で信頼を獲得し、課題の本質に迫り、具体的な提案で合意を目指します。会話の組み立て力がここで露わになります。</p>
+      </div>
+      <div class="step-image">
+        <img src="step14_s6_turn1.png" alt="AI商談ロープレ チャット画面" style="width:100%;height:100%;object-fit:cover;">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REPORT -->
+<section class="report section" id="report">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-eyebrow">評価レポート</div>
+      <h2 class="section-heading">3軸の定量スコアで、候補者の実力を可視化</h2>
+    </div>
+    <div class="report-grid">
+      <div class="report-card reveal">
+        <div class="report-score">
+          <div class="report-score-num">92</div>
+          <div class="report-score-label">TOTAL SCORE ─ EXCELLENT</div>
+        </div>
+        <div class="report-axes">
+          <div class="report-axis">
+            <span class="report-axis-name">ヒアリング力</span>
+            <div class="report-axis-track"><div class="report-axis-bar" style="width:0%" data-w="92%"></div></div>
+            <span class="report-axis-val">92</span>
+          </div>
+          <div class="report-axis">
+            <span class="report-axis-name">仮説の質</span>
+            <div class="report-axis-track"><div class="report-axis-bar" style="width:0%" data-w="88%"></div></div>
+            <span class="report-axis-val">88</span>
+          </div>
+          <div class="report-axis">
+            <span class="report-axis-name">情報伝達力</span>
+            <div class="report-axis-track"><div class="report-axis-bar" style="width:0%" data-w="95%"></div></div>
+            <span class="report-axis-val">95</span>
+          </div>
+        </div>
+      </div>
+      <div class="reveal reveal-d2">
+        <ul class="report-features">
+          <li>ヒアリング力・仮説の質・情報伝達力の3軸を定量スコア化。候補者間の比較が容易になります</li>
+          <li>裏設定への到達度を客観指標として併記。表面的な応答と本質的な理解の差を可視化します</li>
+          <li>上級マネージャーからのフィードバックコメントで、入社後の育成ポイントを具体的に把握できます</li>
+          <li>強み・弱みのバランスを直感的に理解でき、面接時の深掘り材料としてもご活用いただけます</li>
+        </ul>
+      </div>
+    </div>
+    <div class="mid-cta reveal">
+      <p>まずは採用チームで体験してみませんか？</p>
+      <a class="btn btn-primary" href="https://calendar.app.google/m3GUYkHfwfmo9YfS6" target="_blank" rel="noopener">無料相談を予約する</a>
+    </div>
+  </div>
+</section>
+
+<!-- JOBS -->
+<section class="jobs section" id="jobs">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-eyebrow">対応職種</div>
+      <h2 class="section-heading">ビジネス職の主要ポジションをカバー</h2>
+    </div>
+    <div class="job-grid reveal">
+      <div class="job-card is-active">
+        <div class="job-card-title">カスタマー<br>サクセス</div>
+        <div class="job-card-status">体験可能</div>
+        <div class="job-card-badge">デモあり</div>
+      </div>
+      <div class="job-card">
+        <div class="job-card-title">事業開発<br>（BizDev）</div>
+        <div class="job-card-status">準備中</div>
+      </div>
+      <div class="job-card">
+        <div class="job-card-title">コンサル<br>タント</div>
+        <div class="job-card-status">準備中</div>
+      </div>
+      <div class="job-card">
+        <div class="job-card-title">プロジェクト<br>マネージャー</div>
+        <div class="job-card-status">準備中</div>
+      </div>
+    </div>
+    <div class="notify-bar reveal">
+      <span class="notify-bar-text">新しい職種がリリースされた際にお知らせします</span>
+      <input type="email" placeholder="メールアドレス">
+      <button>通知を受け取る</button>
+    </div>
+  </div>
+</section>
+
+<!-- BENEFITS -->
+<section class="benefits section" id="benefits">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-eyebrow">導入メリット</div>
+      <h2 class="section-heading">採用の質を、仕組みで高める</h2>
+    </div>
+    <div class="benefit-grid">
+      <div class="benefit-item reveal reveal-d1">
+        <h4>入社前にCS適性を定量把握</h4>
+        <p>面接の印象だけに頼らず、実務に即したスキルをデータで評価。採用判断の精度が向上します。</p>
+      </div>
+      <div class="benefit-item reveal reveal-d2">
+        <h4>育成ポイントの明確化</h4>
+        <p>3軸の定量評価により、入社後に何を伸ばすべきかが明確に。オンボーディングの最適化に直結します。</p>
+      </div>
+      <div class="benefit-item reveal reveal-d3">
+        <h4>属人的な面接判断からの脱却</h4>
+        <p>一貫した評価基準で面接官による評価ブレを解消。公平で再現性のある採用プロセスを実現します。</p>
+      </div>
+      <div class="benefit-item reveal reveal-d3">
+        <h4>採用〜オンボーディングのROI向上</h4>
+        <p>ミスマッチによる早期離職を防止し、採用・研修コストの無駄を削減。投資対効果を改善します。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq section" id="faq">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-eyebrow">よくあるご質問</div>
+      <h2 class="section-heading">FAQ</h2>
+    </div>
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <div class="faq-q"><span>受検にかかる時間はどのくらいですか？</span><span class="faq-toggle">+</span></div>
+        <div class="faq-a"><p>候補者の受検時間は約60分から90分程度です。管理画面での結果確認は受検完了後すぐにご覧いただけます。</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>受検環境に制限はありますか？</span><span class="faq-toggle">+</span></div>
+        <div class="faq-a"><p>PC・スマートフォンどちらにも対応しています。ブラウザのみで完結し、アプリのインストールは不要です。</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>AI評価の信頼性はどの程度ですか？</span><span class="faq-toggle">+</span></div>
+        <div class="faq-a"><p>ルーブリックに基づき3軸×複数観点で定量評価しています。裏設定到達度による客観指標も併用し、表面的な応答と本質的な理解を区別します。</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>導入までの流れを教えてください。</span><span class="faq-toggle">+</span></div>
+        <div class="faq-a"><p>お問い合わせ → デモ体験 → トライアル導入 → 本格運用の流れです。最短1週間で開始可能です。</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>自社に合わせたカスタマイズは可能ですか？</span><span class="faq-toggle">+</span></div>
+        <div class="faq-a"><p>はい。自社の業界・顧客像に合わせたシナリオ調整が可能です。詳細はお問い合わせください。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final section" id="cta-final">
+  <div class="container">
+    <div class="reveal">
+      <h2 class="cta-headline">採用ミスマッチを、入社前に防ぐ。</h2>
+      <p class="cta-sub">お気軽にご相談ください。担当者が導入をサポートします。</p>
+      <div class="cta-buttons">
+        <a class="btn btn-primary" href="https://calendar.app.google/m3GUYkHfwfmo9YfS6" target="_blank" rel="noopener">無料相談を予約する</a>
+        <a class="btn btn-outline" href="https://docs.google.com/forms/d/1lToq7kDKAOyXFuW8kgv3QEgoI8JlXFVU0gGOVbsB09I/" target="_blank" rel="noopener">サービス資料をダウンロード</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Image Lightbox -->
+<div class="img-lightbox" id="img-lightbox">
+  <button class="img-lightbox-close" id="img-lightbox-close" aria-label="閉じる">✕</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <p class="footer-text">© 2026 Rightjob Inc. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+const reveals = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+reveals.forEach(el => obs.observe(el));
+
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 40);
+});
+
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('click', () => {
+    const item = q.parentElement;
+    const open = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!open) item.classList.add('open');
+  });
+});
+
+const reportObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.report-axis-bar').forEach(bar => {
+        bar.style.width = bar.dataset.w;
+      });
+    }
+  });
+}, { threshold: 0.3 });
+const rc = document.querySelector('.report-card');
+if (rc) reportObs.observe(rc);
+
+// Video modal
+const overlay = document.getElementById('video-overlay');
+const modal = document.getElementById('video-modal');
+const modalVideo = document.getElementById('modal-video');
+const modalClose = document.getElementById('video-modal-close');
+if (overlay && modal && modalVideo) {
+  overlay.addEventListener('click', () => {
+    modal.classList.add('is-open');
+    modalVideo.currentTime = 0;
+    modalVideo.play();
+    document.body.style.overflow = 'hidden';
+  });
+  function closeModal() {
+    modal.classList.remove('is-open');
+    modalVideo.pause();
+    document.body.style.overflow = '';
+  }
+  modalClose.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
+  });
+  modalVideo.addEventListener('ended', closeModal);
+}
+
+// Image lightbox
+const lightbox = document.getElementById('img-lightbox');
+const lightboxImg = document.getElementById('lightbox-img');
+const lightboxClose = document.getElementById('img-lightbox-close');
+document.querySelectorAll('.step-image img').forEach(img => {
+  img.addEventListener('click', () => {
+    lightboxImg.src = img.src;
+    lightboxImg.alt = img.alt;
+    lightbox.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  });
+});
+function closeLightbox() {
+  lightbox.classList.remove('is-open');
+  document.body.style.overflow = '';
+}
+if (lightbox) {
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lightbox.classList.contains('is-open')) closeLightbox();
+  });
+}
+</script>
+</body>
+</html>
