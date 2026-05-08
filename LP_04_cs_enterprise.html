@@ -706,6 +706,18 @@ body {
   transition: background 0.2s;
 }
 .notify-bar button:hover { background: var(--accent-light); }
+.notify-bar button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.notify-msg {
+  font-size: 0.78rem;
+  font-weight: 500;
+  width: 100%;
+  margin-top: 0.3rem;
+}
+.notify-msg.success { color: var(--green); }
+.notify-msg.error { color: #c53030; }
 
 /* ===== BENEFITS ===== */
 .benefits {
@@ -1091,11 +1103,12 @@ body {
         <div class="job-card-status">準備中</div>
       </div>
     </div>
-    <div class="notify-bar reveal">
+    <form class="notify-bar reveal" id="notify-form">
       <span class="notify-bar-text">新しい職種がリリースされた際にお知らせします</span>
-      <input type="email" placeholder="メールアドレス">
-      <button>通知を受け取る</button>
-    </div>
+      <input type="email" id="notify-email" placeholder="メールアドレス" required>
+      <button type="submit" id="notify-btn">通知を受け取る</button>
+      <span class="notify-msg" id="notify-msg"></span>
+    </form>
   </div>
 </section>
 
@@ -1269,6 +1282,58 @@ if (lightbox) {
   });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && lightbox.classList.contains('is-open')) closeLightbox();
+  });
+}
+
+// Notify form — Supabase
+const SUPABASE_URL = 'https://zsfbmoikraktuffjfhml.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpzZmJtb2lrcmFrdHVmZmpmaG1sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2Nzc2MTcsImV4cCI6MjA4ODI1MzYxN30.CzXcaHaMHF5eBD_f5idp7Zk8dWz3O66WGQA7Cu-Tbjo';
+
+const notifyForm = document.getElementById('notify-form');
+const notifyEmail = document.getElementById('notify-email');
+const notifyBtn = document.getElementById('notify-btn');
+const notifyMsg = document.getElementById('notify-msg');
+
+if (notifyForm) {
+  notifyForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = notifyEmail.value.trim();
+    if (!email) return;
+
+    notifyBtn.disabled = true;
+    notifyBtn.textContent = '送信中...';
+    notifyMsg.textContent = '';
+    notifyMsg.className = 'notify-msg';
+
+    try {
+      const res = await fetch(SUPABASE_URL + '/rest/v1/lp_notify_subscribers', {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ email: email, source: 'lp_enterprise' })
+      });
+
+      if (res.ok || res.status === 201) {
+        notifyMsg.textContent = '登録ありがとうございます。新職種リリース時にお知らせします。';
+        notifyMsg.className = 'notify-msg success';
+        notifyEmail.value = '';
+      } else if (res.status === 409) {
+        notifyMsg.textContent = 'このメールアドレスは既に登録されています。';
+        notifyMsg.className = 'notify-msg error';
+      } else {
+        throw new Error('status ' + res.status);
+      }
+    } catch (err) {
+      notifyMsg.textContent = '送信に失敗しました。しばらくしてから再度お試しください。';
+      notifyMsg.className = 'notify-msg error';
+    } finally {
+      notifyBtn.disabled = false;
+      notifyBtn.textContent = '通知を受け取る';
+    }
   });
 }
 </script>
